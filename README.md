@@ -12,6 +12,8 @@ Create a web application that allows users to list, filter and view the weather 
 # Assumptions
 1. All endpoints are publicly available without authentication/authorization.
 2. Current information is only limited to Singapore.
+3. The interval for weather update is every 5 minutes.
+4. There is no need to handle race conditions.
 
 # Functional Requirements
 1. User is able to retrieve a list of locations given a date and time.
