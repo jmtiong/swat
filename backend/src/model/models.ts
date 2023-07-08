@@ -1,4 +1,6 @@
-import { TrafficCapture, Area, Prisma, Camera } from '@prisma/client'
+import { GovSgCameraInfo, GovSgForecast, GovSgWeatherInfo } from '@/dto/gov-sg.dto'
+import { DatetimeService } from '@/util/date-time.service'
+import { TrafficCapture, Area, Prisma, Camera, WeatherForecast } from '@prisma/client'
 
 export class AreaModel {
   pky: number
@@ -36,19 +38,34 @@ export class WeatherForecastModel {
   ctm: bigint
   utm: bigint
   forecast: string
-  validFrom: bigint
-  validTo: bigint
+  lastUpdateTimestamp: string
+  validFrom: string
+  validTo: string
   isArchived: boolean
-  // area: Area
+  areaPky: number
 
-  sanitizeFromDatabase () {
-    
+  sanitizeToDatabaseFormat (): Partial<WeatherForecast> {
+    const { pky, ctm, utm, ...others } = this
+    const validFrom = DatetimeService.convertDateToTimestamp(others.validFrom)
+    const validTo = DatetimeService.convertDateToTimestamp(others.validTo)
+    const lastUpdateTimestamp = DatetimeService.convertDateToTimestamp(others.lastUpdateTimestamp)
+    return {
+      ...others,
+      validFrom,
+      validTo,
+      lastUpdateTimestamp
+    }
+  }
+
+  populateFromGovSgData (weatherInfo: GovSgWeatherInfo, data: GovSgForecast, area: Area) {
+    this.forecast = data.forecast
+    const { start, end } = weatherInfo.validPeriod
+    this.validFrom = start
+    this.validTo = end
+    this.areaPky = area?.pky
+    this.lastUpdateTimestamp = weatherInfo.updateTimestamp
   }
 }
-
-const trafficCaptureWithCamera = Prisma.validator<Prisma.TrafficCaptureArgs>()({
-  include: { camera: true }
-})
 
 export class TrafficCaptureModel {
   pky: number
@@ -56,15 +73,29 @@ export class TrafficCaptureModel {
   utm: bigint
   url: string
   hash: string
-  width: string
-  height: string
+  width: number
+  height: number
   isArchived: boolean
-  capturedTimestamp: bigint
+  capturedTimestamp: string
+  cameraPky: number
   // camera: Camera
 
-  static sanitizeFromDatabase (trafficCapture: Prisma.TrafficCaptureGetPayload<typeof trafficCaptureWithCamera>) {
-    const capture = new TrafficCaptureModel()
-    Object.assign(capture, trafficCapture)
-    return capture
+  sanitizeToDatabaseFormat (): Partial<TrafficCapture> {
+    const { pky, ctm, utm, ...others } = this
+    const timestamp = DatetimeService.convertDateToTimestamp(others.capturedTimestamp)
+    return {
+      ...others,
+      capturedTimestamp: timestamp
+    }
+  }
+
+  populateFromGovSgData (data: GovSgCameraInfo, camera?: Camera) {
+    this.capturedTimestamp = data.timestamp
+    const { height, width, md5 } = data.imageMetadata
+    this.height = height
+    this.width = width
+    this.hash = md5
+    this.url = data.image
+    this.cameraPky = camera?.pky
   }
 }
