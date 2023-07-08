@@ -59,3 +59,13 @@ model TrafficCapture {
   ctm                 BigInt
   utm                 BigInt
 }
+
+model SystemConfiguration {
+  pky     Int     @default(autoincrement()) @id
+  ctm     BigInt
+  utm     BigInt
+  name    String  @unique
+  module  String
+  value   String
+  version String
+}
