@@ -69,10 +69,10 @@ export class SchedulerService implements OnApplicationBootstrap {
     const { frequency, minute } = setting
     let time = ''
     if (frequency === ScheduleFrequency.MINUTELY) {
-      time = `0 */${minute} * * *`
+      time = `*/${minute} * * * *`
     } else {
       // To run every 5 minute
-      time = '0 */5 * * *'
+      time = '*/5 * * * *'
     }
 
     return new CronTime(time, 'Asia/Singapore')
