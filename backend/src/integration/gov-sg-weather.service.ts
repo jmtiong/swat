@@ -17,7 +17,7 @@ export class GovSgWeatherService {
     protected readonly datetimeService: DatetimeService
   ) {}
 
-  async retrieveTwoHourForecasts (timestamp: bigint, dateTimestamp: bigint) {
+  async retrieveTwoHourForecasts (timestamp: number = undefined, dateTimestamp: bigint = undefined) {
     const url = await this.prismaService.systemConfiguration.findUnique({
       where: {
         name: 'gov-sg-two-hour-weather-url'
@@ -32,7 +32,7 @@ export class GovSgWeatherService {
     if (isNumber(timestamp)) {
       parameter = `?date_time=${encodeURIComponent(this.datetimeService.convertTimestampToTimeZoneFormat(timestamp))}`
     } else if (isNumber(dateTimestamp)) {
-      parameter = `?date=${encodeURIComponent(this.datetimeService.convertTimestampToTimeZoneFormat(dateTimestamp))}`
+      parameter = `?date=${encodeURIComponent(this.datetimeService.convertTimestampToDate(dateTimestamp))}`
     }
 
     const { data }= await firstValueFrom(

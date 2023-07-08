@@ -1,3 +1,5 @@
+import camelcaseKeysDeep from 'camelcase-keys-deep'
+
 export class GovSgCommonErrorResponse {
   code: number
   message: string
@@ -18,11 +20,11 @@ export class GovSgApiInfo {
 }
 
 export class GovSgTrafficSuccessResponse extends GovSgCommonSuccessResponse {
-  items: GovSgTrafficCapture[]
+  items: GovSgTrafficCapture
 
   static convertAxiosResponseToDto(data: any): GovSgTrafficSuccessResponse {
     const response = new GovSgTrafficSuccessResponse()
-    Object.assign(response, data)
+    Object.assign(response, camelcaseKeysDeep(data))
     return response
   }
 }
@@ -34,7 +36,7 @@ export class GovSgTrafficCapture {
 
 export class GovSgCameraInfo {
   timestamp: string
-  cameraId: number
+  cameraId: string
   imageId: number
   image: string
   imageMetadata: GovSgImageMetadata
@@ -52,7 +54,7 @@ export class GovSgWeatherForecastSuccessResponse extends GovSgCommonSuccessRespo
 
   static convertAxiosResponseToDto(data: any): GovSgWeatherForecastSuccessResponse {
     const response = new GovSgWeatherForecastSuccessResponse()
-    Object.assign(response, data)
+    Object.assign(response, camelcaseKeysDeep(data))
     return response
   }
 }

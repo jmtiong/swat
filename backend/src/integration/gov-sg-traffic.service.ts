@@ -17,7 +17,7 @@ export class GovSgTrafficService {
     protected readonly datetimeService: DatetimeService
   ) {}
 
-  async retrieveTransportTrafficImages (timestamp: bigint) {
+  async retrieveTransportTrafficImages (timestamp: number) {
     const url = await this.prismaService.systemConfiguration.findUnique({
       where: {
         name: 'gov-sg-traffic-url'
