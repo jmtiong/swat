@@ -1,4 +1,8 @@
+import { SetMetadata } from "@nestjs/common";
 import { Prisma, WeatherForecast } from "@prisma/client";
+
+export const WEATHER_FORECAST_SERVICE= 'WeatherForecastService'
+export const WeatherForecastService = () => SetMetadata(WEATHER_FORECAST_SERVICE, true)
 
 export interface WeatherForecastService {
   retrieveListOfWeatherForecast (filter: Prisma.WeatherForecastFindManyArgs): Promise<WeatherForecast[]>
