@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Area {
+  pky             Int     @default(autoincrement()) @id
+  name            String  @unique
+  lat             Decimal
+  long            Decimal
+  ctm             BigInt
+  utm             BigInt
+  cameras         Camera[]
+  weatherForecast WeatherForecast[]
+}
+
+model Camera {
+  pky       Int     @default(autoincrement()) @id
+  cameraId  String  @unique()
+  name      String
+  lat       Decimal
+  long      Decimal
+  ctm       BigInt
+  utm       BigInt
+  areaPky   Int
+  area      Area    @relation(fields:[areaPky], references: [pky])
+  captures  TrafficCapture[]
+}
+
+model WeatherForecast {
+  pky         Int     @default(autoincrement()) @id
+  areaPky     Int
+  area        Area    @relation(fields:[areaPky], references: [pky])
+  forecast    String
+  validFrom   BigInt
+  validTo     BigInt
+  isArchived  Boolean
+  ctm         BigInt
+  utm         BigInt
+}
+
+model TrafficCapture {
+  pky                 Int     @default(autoincrement()) @id
+  cameraPky           Int
+  camera              Camera  @relation(fields:[cameraPky], references: [pky])
+  url                 String
+  hash                String
+  width               Int
+  height              Int
+  isArchived          Boolean
+  capturedTimestamp   BigInt
+  ctm                 BigInt
+  utm                 BigInt
+}

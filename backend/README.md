@@ -68,7 +68,7 @@ $ npm run test:cov
 
 #### Updating Weather Information Logic (Cron)
 1. If the last updated timestamp is more than 5 minutes from now, request from API.
-2. If time range has already passed validTo time, mark it as over and update it one last time.
+2. If time range has already passed validTo time, mark it as archived and update it one last time.
 3. If requesting old date time range and it already exists, do not call API.
 
 #### Weather External API
