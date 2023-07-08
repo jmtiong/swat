@@ -35,15 +35,16 @@ model Camera {
 }
 
 model WeatherForecast {
-  pky         Int     @default(autoincrement()) @id
-  areaPky     Int
-  area        Area    @relation(fields:[areaPky], references: [pky])
-  forecast    String
-  validFrom   BigInt
-  validTo     BigInt
-  isArchived  Boolean
-  ctm         BigInt
-  utm         BigInt
+  pky                 Int     @default(autoincrement()) @id
+  areaPky             Int
+  area                Area    @relation(fields:[areaPky], references: [pky])
+  forecast            String
+  lastUpdateTimestamp BigInt
+  validFrom           BigInt
+  validTo             BigInt
+  isArchived          Boolean
+  ctm                 BigInt
+  utm                 BigInt
 }
 
 model TrafficCapture {
@@ -68,4 +69,15 @@ model SystemConfiguration {
   module  String
   value   String
   version String
+}
+
+model SchedulerSetting {
+  pky       Int     @default(autoincrement()) @id
+  ctm       BigInt
+  utm       BigInt
+  name      String
+  enable    Boolean
+  minute    Int
+  frequency Int
+  timestamp BigInt
 }
