@@ -88,7 +88,6 @@ We can use Redis to cache similar requests within a short time frame.
 Scenario 1: Camera ID and Different Hash = create new record
 Scenario 2: Camera ID and Same Hash = mark record as archived
 Scenario 3: Camera ID, different hash on 1st iteration. Same Camera ID, different hash on 2nd iteration = create new record.
-Scenario 4: No such camera ID = create new camera ID, and tag closest area. Create new record.
 
 #### Traffic External API
 1. If there are no traffic information exists, call API.
