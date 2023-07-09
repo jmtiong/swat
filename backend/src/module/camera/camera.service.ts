@@ -19,7 +19,11 @@ export class CameraServiceImpl implements CameraService {
     throw new Error("Method not implemented.");
   }
   retrieveCameraFromId(id: string): Promise<Camera> {
-    throw new Error("Method not implemented.");
+    return this.prismaService.camera.findUnique({
+      where: {
+        cameraId: id
+      }
+    })
   }
   createCamera(camera: Camera): Promise<Camera> {
     return this.prismaService.camera.create({
@@ -34,6 +38,11 @@ export class CameraServiceImpl implements CameraService {
     return result.count
   }
   updateCamera(pky: number, camera: Camera): Promise<Camera> {
-    throw new Error("Method not implemented.");
+    return this.prismaService.camera.update({
+      where: {
+        pky
+      },
+      data: camera
+    })
   }
 }

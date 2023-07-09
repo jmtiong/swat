@@ -36,7 +36,12 @@ export class AreaServiceImpl implements AreaService {
       return this.prismaService.area.count()
   }
   updateArea(pky: number, area: Area): Promise<Area> {
-    throw new Error("Method not implemented.");
+    return this.prismaService.area.update({
+      where: {
+        pky
+      },
+      data: area
+    })
   }
   async retrieveClosestArea(lat: number, long: number): Promise<Area> {
     const areas = await this.retrieveListOfArea({})

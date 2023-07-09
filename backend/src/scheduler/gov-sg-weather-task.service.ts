@@ -46,6 +46,7 @@ export class GovSgWeatherTask implements ScheduleTask {
         
         // Create new forecasts
         if (weatherForecasts.length === 0) {
+          this.logger.log(`Generating new forecast from: ${start}, to: ${end}`)
           return Promise.all(weatherList.forecasts.map(async (forecast)=> {
             const newForecast = new WeatherForecastModel()
             const area = areas.find(area => area.name === forecast.area)
@@ -57,6 +58,7 @@ export class GovSgWeatherTask implements ScheduleTask {
         // If current timestamp is still in valid period
         const currentTime = this.datetimeService.getCurrentTimestamp()
         if (currentTime >= validFrom && currentTime <= validTo) {
+          this.logger.log(`Updating forecast from ${start}, to: ${end}`)
           return Promise.all(weatherList.forecasts.map(async (forecast)=> {
             const updateForecast = new WeatherForecastModel()
             const area = areas.find(area => area.name === forecast.area)
@@ -68,6 +70,7 @@ export class GovSgWeatherTask implements ScheduleTask {
 
         // If current timestamp has passed valid period
         if (currentTime > validTo) {
+          this.logger.log(`Archiving forecasts from ${start}, to: ${end}`)
           return Promise.all(weatherList.forecasts.map(async (forecast)=> {
             const updateForecast = new WeatherForecastModel()
             const area = areas.find(area => area.name === forecast.area)
@@ -77,6 +80,8 @@ export class GovSgWeatherTask implements ScheduleTask {
             return this.weatherForecastService.updateWeatherForecastRecord(currentForecast.pky, updateForecast.sanitizeToDatabaseFormat() as WeatherForecast)
           }))
         }
+
+        this.logger.log(`No action taken for forecasts from: ${start}, to: ${end}`)
       })
     })
 

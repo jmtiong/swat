@@ -56,12 +56,19 @@ export class GovSgTrafficTask implements ScheduleTask {
         const camera = await this.cameraService.retrieveCameraFromId(cameraId)
 
         if (!storedCapture || storedCapture.hash !== md5) {
+          this.logger.log(`Generating new capture for pky: ${camera.pky}, camera id: ${camera.cameraId}.`)
           const newCapture = new TrafficCaptureModel()
           newCapture.populateFromGovSgData(cameraCapture, camera)
           return this.trafficCaptureService.createTrafficCapture(newCapture.sanitizeToDatabaseFormat() as TrafficCapture)
         }
+
+        if (storedCapture.isArchived) {
+          this.logger.log(`Already archived capture for pky: ${camera.pky}, camera id: ${camera.cameraId}.`)
+          return
+        }
         
         // storedCapture hash is the same, archive it.
+        this.logger.log(`Archiving camera capture for pky: ${camera.pky}, camera id: ${camera.cameraId}.`)
         const existingCapture = new TrafficCaptureModel()
         existingCapture.populateFromGovSgData(cameraCapture)
         existingCapture.isArchived = true
