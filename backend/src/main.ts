@@ -8,7 +8,8 @@ import express from 'express'
 
 // solve prisma 'Do not know how to serialize a BigInt' issue
 // Ref: https://github.com/prisma/studio/issues/614
-BigInt.prototype.toJSON = function () {
+// @TODO: Treat it as any because typescript will throw error on toJSON cannot be found in BigInt
+(BigInt.prototype as any).toJSON = function () {
   return Number(this.toString())
 }
 
