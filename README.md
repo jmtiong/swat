@@ -1,9 +1,9 @@
 # swat
-SWAT - See Weather And Traffic
+SWAT - Singapore Weather And Traffic
 # SWAT
 
 ## What is SWAT?
-SWAT stands for See Weather And Traffic.
+SWAT stands for Singapore Weather And Traffic.
 
 
 # Business Objective
