@@ -9,7 +9,7 @@ import { CoreDomainModule } from "@/module/core-domain.module";
 @Module({
   imports: [
     HttpModule.register({
-      timeout: 5000,
+      timeout: 20000,
       maxRedirects: 5
     }),
     CoreDomainModule

@@ -38,6 +38,7 @@ model WeatherForecast {
   areaPky             Int
   area                Area    @relation(fields:[areaPky], references: [pky])
   forecast            String
+  castType            String?
   lastUpdateTimestamp BigInt
   validFrom           BigInt
   validTo             BigInt

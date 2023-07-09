@@ -19,16 +19,23 @@ export class TrafficCaptureImpl implements TrafficCaptureService {
   retrieveTrafficCapture(pky: number): Promise<TrafficCapture> {
     throw new Error("Method not implemented.");
   }
-  async retrieveLastTrafficCaptureFromId(cameraId: string): Promise<TrafficCapture> {
+  async retrieveLastTrafficCaptureFromId(cameraId: string, timestamp?: number): Promise<TrafficCapture> {
     const camera = await this.cameraService.retrieveCameraFromId(cameraId)
-    return this.prismaService.trafficCapture.findFirst({
+    const filter: Prisma.TrafficCaptureFindFirstArgs = {
       where: {
         cameraPky: camera.pky
       },
       orderBy: {
         capturedTimestamp: 'desc'
       }
-    })
+    }
+
+    if (timestamp) {
+      filter.where.capturedTimestamp = {
+        lte: timestamp
+      }
+    }
+    return this.prismaService.trafficCapture.findFirst(filter)
   }
   createTrafficCapture(trafficCapture: TrafficCapture): Promise<TrafficCapture> {
     return this.prismaService.trafficCapture.create({

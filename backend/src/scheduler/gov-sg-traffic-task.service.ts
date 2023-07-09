@@ -4,7 +4,7 @@ import { CronTime, CronJob } from "cron";
 import { GovSgTrafficService } from "@/integration/gov-sg-traffic.service";
 import { SchedulerSetting, TrafficCapture } from "@prisma/client";
 import { DatetimeService } from "@/util/date-time.service";
-import { TRAFFICE_CAPTURE_SERVICE, TrafficCaptureService } from "@/module/traffic-capture/traffic-capture.interface";
+import { TRAFFIC_CAPTURE_SERVICE, TrafficCaptureService } from "@/module/traffic-capture/traffic-capture.interface";
 import { CAMERA_SERVICE, CameraService } from "@/module/camera/camera.interface";
 import { AREA_SERVICE, AreaService } from "@/module/area/area.interface";
 import { TrafficCaptureModel } from "@/model/models";
@@ -21,7 +21,7 @@ export class GovSgTrafficTask implements ScheduleTask {
   constructor (
     protected readonly govSgTrafficService: GovSgTrafficService,
     protected readonly datetimeService: DatetimeService,
-    @Inject(TRAFFICE_CAPTURE_SERVICE) protected readonly trafficCaptureService: TrafficCaptureService,
+    @Inject(TRAFFIC_CAPTURE_SERVICE) protected readonly trafficCaptureService: TrafficCaptureService,
     @Inject(CAMERA_SERVICE) protected readonly cameraService: CameraService,
     @Inject(AREA_SERVICE) protected readonly areaService: AreaService
   ) {}
@@ -70,7 +70,7 @@ export class GovSgTrafficTask implements ScheduleTask {
         // storedCapture hash is the same, archive it.
         this.logger.log(`Archiving camera capture for pky: ${camera.pky}, camera id: ${camera.cameraId}.`)
         const existingCapture = new TrafficCaptureModel()
-        existingCapture.populateFromGovSgData(cameraCapture)
+        existingCapture.populateFromGovSgData(cameraCapture, camera)
         existingCapture.isArchived = true
         return this.trafficCaptureService.updateTrafficCapture(camera.pky, existingCapture.sanitizeToDatabaseFormat() as TrafficCapture)
       })

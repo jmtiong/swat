@@ -1,6 +1,6 @@
 import { Area, Prisma } from "@prisma/client";
-import { DefaultArgs, GetResult, Decimal } from "@prisma/client/runtime";
-import { AreaService } from "./area.interface";
+import { DefaultArgs } from "@prisma/client/runtime";
+import { AreaService, AreaWithWeathers } from "./area.interface";
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "@/util/prisma.service";
 import { GeoLocationMatcherService } from "@/util/geolocation-matcher.service";
@@ -12,11 +12,16 @@ export class AreaServiceImpl implements AreaService {
     protected readonly prismaService: PrismaService,
     protected readonly geoLocationMatcherService: GeoLocationMatcherService
   ) {}
-  async retrieveListOfArea(filter: Prisma.AreaFindManyArgs<DefaultArgs>): Promise<(Area)[]> {
-    return this.prismaService.area.findMany(filter)
+  async retrieveListOfAreaWithWeathers(filter: Prisma.AreaFindManyArgs<DefaultArgs>): Promise<AreaWithWeathers[]> {
+    // @TODO: To specify more defined filter arguments so that it will include weathers type.
+    return this.prismaService.area.findMany(filter) as Promise<AreaWithWeathers[]>
   }
-  retrieveArea(pky: number): Promise<Area> {
-    throw new Error("Method not implemented.");
+  retrieveArea(name: string) {
+    return this.prismaService.area.findUnique({
+      where: {
+        name
+      }
+    })
   }
   createArea(area: Area): Promise<Area> {
     return this.prismaService.area.create({
@@ -44,7 +49,7 @@ export class AreaServiceImpl implements AreaService {
     })
   }
   async retrieveClosestArea(lat: number, long: number): Promise<Area> {
-    const areas = await this.retrieveListOfArea({})
+    const areas = await this.retrieveListOfAreaWithWeathers({})
 
     const toMatch = new LatLong()
     toMatch.lat = Number(lat)

@@ -1,11 +1,17 @@
-import { Area, Prisma } from "@prisma/client";
+import { Area, Prisma, WeatherForecast } from "@prisma/client";
 
 export const AREA_SERVICE= 'AreaService'
 
+export const areaWithWeathers = Prisma.validator<Prisma.AreaArgs>()({
+  include: { weatherForecast: true }
+})
+
+export type AreaWithWeathers = Prisma.AreaGetPayload<typeof areaWithWeathers>
+
 export interface AreaService {
   countNumberOfAreas (): Promise<number>
-  retrieveListOfArea (filter: Prisma.AreaFindManyArgs): Promise<Area[]>
-  retrieveArea (pky: number): Promise<Area>
+  retrieveListOfAreaWithWeathers (filter: Prisma.AreaFindManyArgs): Promise<AreaWithWeathers[]>
+  retrieveArea (name: string): Promise<Area>
   createArea (area: Area): Promise<Area>
   createManyAreas (areas: Area[]): Promise<number>
   updateArea (pky: number, area: Area): Promise<Area>

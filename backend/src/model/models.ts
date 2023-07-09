@@ -9,8 +9,8 @@ export class LatLong {
 
 export class AreaModel {
   pky: number
-  ctm: bigint
-  utm: bigint
+  ctm: number
+  utm: number
   name: string
   lat: number
   long: number
@@ -39,8 +39,8 @@ export class AreaModel {
 
 export class CameraModel {
   pky: number
-  ctm: bigint
-  utm: bigint
+  ctm: number
+  utm: number
   cameraId: string
   lat: number
   long: number
@@ -75,9 +75,10 @@ export class CameraModel {
 
 export class WeatherForecastModel {
   pky: number
-  ctm: bigint
-  utm: bigint
+  ctm: number
+  utm: number
   forecast: string
+  castType: string
   lastUpdateTimestamp: string
   validFrom: string
   validTo: string
@@ -110,8 +111,8 @@ export class WeatherForecastModel {
 
 export class TrafficCaptureModel {
   pky: number
-  ctm: bigint
-  utm: bigint
+  ctm: number
+  utm: number
   url: string
   hash: string
   width: number

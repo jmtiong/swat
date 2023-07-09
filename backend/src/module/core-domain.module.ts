@@ -3,7 +3,7 @@ import { AREA_SERVICE } from "./area/area.interface";
 import { AreaServiceImpl } from "./area/area.service";
 import { CAMERA_SERVICE } from "./camera/camera.interface";
 import { CameraServiceImpl } from "./camera/camera.service";
-import { TRAFFICE_CAPTURE_SERVICE } from "./traffic-capture/traffic-capture.interface";
+import { TRAFFIC_CAPTURE_SERVICE } from "./traffic-capture/traffic-capture.interface";
 import { TrafficCaptureImpl } from "./traffic-capture/traffic-capture.service";
 import { WEATHER_FORECAST_SERVICE } from "./weather-forecast/weather-forecast.interface";
 import { WeatherForecastServiceImpl } from "./weather-forecast/weather-forecast.service";
@@ -27,7 +27,7 @@ import { GeoLocationMatcherService } from "@/util/geolocation-matcher.service";
       useClass: CameraServiceImpl
     },
     {
-      provide: TRAFFICE_CAPTURE_SERVICE,
+      provide: TRAFFIC_CAPTURE_SERVICE,
       useClass: TrafficCaptureImpl
     },
     {
@@ -45,7 +45,7 @@ import { GeoLocationMatcherService } from "@/util/geolocation-matcher.service";
       useClass: CameraServiceImpl
     },
     {
-      provide: TRAFFICE_CAPTURE_SERVICE,
+      provide: TRAFFIC_CAPTURE_SERVICE,
       useClass: TrafficCaptureImpl
     },
     {

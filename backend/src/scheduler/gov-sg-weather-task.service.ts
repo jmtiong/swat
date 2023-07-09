@@ -7,6 +7,7 @@ import { AREA_SERVICE, AreaService } from "@/module/area/area.interface";
 import { WeatherForecastModel } from "@/model/models";
 import { GovSgWeatherService } from "@/integration/gov-sg-weather.service";
 import { WEATHER_FORECAST_SERVICE, WeatherForecastService } from "@/module/weather-forecast/weather-forecast.interface";
+import { WeatherCastType } from "@/enum/enum";
 
 export const GOV_SG_WEATHER_TASK = 'GovSgWeatherTask'
 
@@ -31,7 +32,7 @@ export class GovSgWeatherTask implements ScheduleTask {
     this.cronJob = new CronJob(frequency.sendAt(), async () => {
       this.logger.log('Executing Gov SG Weather API...')
       const weatherResponse = await this.govSgWeatherService.retrieveTwoHourForecasts()
-      const areas = await this.areaService.retrieveListOfArea({})
+      const areas = await this.areaService.retrieveListOfAreaWithWeathers({})
       const weatherTimingList = weatherResponse.items
       weatherTimingList.map(async (weatherList) => {
         const { start, end } = weatherList.validPeriod
@@ -40,7 +41,8 @@ export class GovSgWeatherTask implements ScheduleTask {
         const weatherForecasts = await this.weatherForecastService.retrieveListOfWeatherForecast({
           where: {
             validFrom,
-            validTo
+            validTo,
+            castType: WeatherCastType.TWO_HOUR
           }
         })
         
@@ -49,6 +51,7 @@ export class GovSgWeatherTask implements ScheduleTask {
           this.logger.log(`Generating new forecast from: ${start}, to: ${end}`)
           return Promise.all(weatherList.forecasts.map(async (forecast)=> {
             const newForecast = new WeatherForecastModel()
+            newForecast.castType = WeatherCastType.TWO_HOUR
             const area = areas.find(area => area.name === forecast.area)
             newForecast.populateFromGovSgData(weatherList, forecast, area)
             return this.weatherForecastService.createWeatherForecastRecord(newForecast.sanitizeToDatabaseFormat() as WeatherForecast)

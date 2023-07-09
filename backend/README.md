@@ -72,8 +72,7 @@ $ npm run test:cov
 3. If requesting old date time range and it already exists, do not call API.
 
 #### Weather External API
-1. If no weather information of the area exists, call API.
-2. If there exists a weather information but it is outdated, use as it is.
+1. If there exists a weather information but it is outdated, use as it is.
 
 We can use Redis to cache similar requests within a short time frame.
 
@@ -93,9 +92,8 @@ Scenario 3: Camera ID, different hash on 1st iteration. Same Camera ID, differen
 1. If there are no traffic information exists, call API.
 2. If capture is archived, use as it is.
 
-Scenario 1: No capture exists = call API
-Scenario 2: capture exists, captured time > 20 seconds and capture is not archived = call API, if same camera id and same hash, archived. if same camera id and different hash, archived last capture and create new record.
-Scenario 3: capture exists, captured time < 20 seconds = use as it is.
+Scenario 1: capture exists, captured time > 20 seconds and capture is not archived = call API, if same camera id and same hash, archived. if same camera id and different hash, archived last capture and create new record.
+Scenario 2: capture exists, captured time < 20 seconds = use as it is.
 
 
 We can use Redis to cache requests for similar time frame.
