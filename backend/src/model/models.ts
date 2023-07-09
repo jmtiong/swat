@@ -81,7 +81,7 @@ export class WeatherForecastModel {
   lastUpdateTimestamp: string
   validFrom: string
   validTo: string
-  isArchived: boolean
+  isArchived: boolean = false
   areaPky: number
 
   sanitizeToDatabaseFormat (): Partial<WeatherForecast> {
@@ -116,7 +116,7 @@ export class TrafficCaptureModel {
   hash: string
   width: number
   height: number
-  isArchived: boolean
+  isArchived: boolean = false
   capturedTimestamp: string
   cameraPky: number
   // camera: Camera

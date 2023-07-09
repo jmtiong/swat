@@ -40,7 +40,9 @@ export class WeatherForecastServiceImpl implements WeatherForecastService {
   async createWeatherForecastRecord(weatherForecast: WeatherForecast) {
     delete weatherForecast.pky // always remove pky
     return this.prismaService.weatherForecast.create({
-      data: weatherForecast
+      data: {
+        ...weatherForecast
+      }
     })
   }
 
