@@ -30,7 +30,7 @@ export class SchedulerService implements OnApplicationBootstrap {
     })
 
     schedules.forEach(schedule => {
-      this.logger.log('Scheduling %s...', schedule.name)
+      this.logger.log('Scheduling %s ...', schedule.name.toString())
       
       let cronJob: CronJob = null
       try {
@@ -48,6 +48,7 @@ export class SchedulerService implements OnApplicationBootstrap {
       const service = this.scheduleFactory.generateService(convertToTaskType(schedule.name))
       service.setupSettings(schedule)
       cronJob = service.initiateJob(cronTime)
+      this.scheduleACronJob(schedule.name, cronJob, cronTime)
 
       this.logger.log(`${schedule.name} successfully started.`)
       this.logger.log(`${schedule.name} will run at ${cronJob.nextDate()}`)

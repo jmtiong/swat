@@ -1,4 +1,5 @@
 import camelcaseKeysDeep from 'camelcase-keys-deep'
+import { cloneDeep } from 'lodash'
 
 export class GovSgCommonErrorResponse {
   code: number
@@ -20,11 +21,12 @@ export class GovSgApiInfo {
 }
 
 export class GovSgTrafficSuccessResponse extends GovSgCommonSuccessResponse {
-  items: GovSgTrafficCapture
+  items: GovSgTrafficCapture[]
 
   static convertAxiosResponseToDto(data: any): GovSgTrafficSuccessResponse {
     const response = new GovSgTrafficSuccessResponse()
-    Object.assign(response, camelcaseKeysDeep(data))
+    const camelData = camelcaseKeysDeep(data)
+    Object.assign(response, camelData)
     return response
   }
 }
@@ -37,6 +39,7 @@ export class GovSgTrafficCapture {
 export class GovSgCameraInfo {
   timestamp: string
   cameraId: string
+  location: GovSgLabelLocation
   imageId: number
   image: string
   imageMetadata: GovSgImageMetadata
@@ -49,7 +52,7 @@ export class GovSgImageMetadata {
 }
 
 export class GovSgWeatherForecastSuccessResponse extends GovSgCommonSuccessResponse {
-  areaMetadata: GovSgAreaMetadata
+  areaMetadata: GovSgAreaMetadata[]
   items: GovSgWeatherInfo[]
 
   static convertAxiosResponseToDto(data: any): GovSgWeatherForecastSuccessResponse {

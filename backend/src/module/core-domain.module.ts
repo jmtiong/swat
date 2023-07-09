@@ -7,6 +7,7 @@ import { TRAFFICE_CAPTURE_SERVICE } from "./traffic-capture/traffic-capture.inte
 import { TrafficCaptureImpl } from "./traffic-capture/traffic-capture.service";
 import { WEATHER_FORECAST_SERVICE } from "./weather-forecast/weather-forecast.interface";
 import { WeatherForecastServiceImpl } from "./weather-forecast/weather-forecast.service";
+import { GeoLocationMatcherService } from "@/util/geolocation-matcher.service";
 
 /**
  * Put all core domains here. Usually we will create
@@ -16,6 +17,7 @@ import { WeatherForecastServiceImpl } from "./weather-forecast/weather-forecast.
  */
 @Module({
   providers: [
+    GeoLocationMatcherService,
     {
       provide: AREA_SERVICE,
       useClass: AreaServiceImpl

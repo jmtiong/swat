@@ -5,7 +5,7 @@ import { DefaultArgs } from "@prisma/client/runtime";
 
 @Injectable()
 export class TrafficCaptureImpl implements TrafficCaptureService {
-  retrieveListOfTrafficCapture(filter: Prisma.TrafficCaptureFindManyArgs<DefaultArgs>): Promise<TrafficCapture> {
+  retrieveListOfTrafficCapture(filter: Prisma.TrafficCaptureFindManyArgs<DefaultArgs>): Promise<TrafficCapture[]> {
     throw new Error("Method not implemented.");
   }
   retrieveTrafficCapture(pky: number): Promise<TrafficCapture> {

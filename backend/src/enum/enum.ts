@@ -10,3 +10,8 @@ export enum TaskType {
 export const convertToTaskType = (name: string) => {
   return TaskType[name]
 }
+
+export enum ApiName {
+  GOV_SG_TWO_HOUR_WEATHER_URL = 'GOV_SG_TWO_HOUR_WEATHER_URL',
+  GOV_SG_TRAFFIC_URL = 'GOV_SG_TRAFFIC_URL'
+}

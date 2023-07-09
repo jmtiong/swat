@@ -1,6 +1,11 @@
-import { GovSgCameraInfo, GovSgForecast, GovSgWeatherInfo } from '@/dto/gov-sg.dto'
+import { GovSgAreaMetadata, GovSgCameraInfo, GovSgForecast, GovSgWeatherInfo } from '@/dto/gov-sg.dto'
 import { DatetimeService } from '@/util/date-time.service'
 import { TrafficCapture, Area, Prisma, Camera, WeatherForecast } from '@prisma/client'
+
+export class LatLong {
+  lat: number
+  long: number
+}
 
 export class AreaModel {
   pky: number
@@ -12,8 +17,23 @@ export class AreaModel {
   // cameras: CameraModel[]
   // weatherForecast: WeatherForecastModel[]
 
-  sanitizeFromDatabase () {
-    
+  sanitizeToDatabaseFormat (): Partial<Area> {
+    const { pky, ctm, utm, ...others } = this
+    const lat = new Prisma.Decimal(this.lat)
+    const long = new Prisma.Decimal(this.long)
+    return {
+      ...others,
+      lat,
+      long
+    }
+  }
+
+  populateFromGovSgData (metadata: GovSgAreaMetadata) {
+    this.name = metadata.name
+    const { latitude, longitude } = metadata.labelLocation
+    this.lat = latitude
+    this.long = longitude
+    return this
   }
 }
 
@@ -22,14 +42,34 @@ export class CameraModel {
   ctm: bigint
   utm: bigint
   cameraId: string
-  name: string
   lat: number
   long: number
+  areaPky: number
   // area: Area
   // captures: TrafficCapture[]
 
-  static sanitizeFromDatabase () {
-    
+  sanitizeToDatabaseFormat (): Partial<Camera> {
+    const { pky, ctm, utm, lat, long, ...others } = this
+    const latDecimal = new Prisma.Decimal(this.lat)
+    const longDecimal = new Prisma.Decimal(this.long)
+    return {
+      ...others,
+      lat: latDecimal,
+      long: longDecimal
+    }
+  }
+
+  populateFromGovSgData (data: GovSgCameraInfo) {
+    this.cameraId = data.cameraId
+    const { latitude, longitude } = data.location
+    this.lat = latitude
+    this.long = longitude
+    return this
+  }
+
+  populateArea (area: Area) {
+    this.areaPky = area.pky
+    return this
   }
 }
 
@@ -64,6 +104,7 @@ export class WeatherForecastModel {
     this.validTo = end
     this.areaPky = area?.pky
     this.lastUpdateTimestamp = weatherInfo.updateTimestamp
+    return this
   }
 }
 
@@ -97,5 +138,6 @@ export class TrafficCaptureModel {
     this.hash = md5
     this.url = data.image
     this.cameraPky = camera?.pky
+    return this
   }
 }

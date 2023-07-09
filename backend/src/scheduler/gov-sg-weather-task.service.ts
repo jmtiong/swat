@@ -29,6 +29,7 @@ export class GovSgWeatherTask implements ScheduleTask {
 
   initiateJob(frequency: CronTime): CronJob {
     this.cronJob = new CronJob(frequency.sendAt(), async () => {
+      this.logger.log('Executing Gov SG Weather API...')
       const weatherResponse = await this.govSgWeatherService.retrieveTwoHourForecasts()
       const areas = await this.areaService.retrieveListOfArea({})
       const weatherTimingList = weatherResponse.items

@@ -24,7 +24,6 @@ model Area {
 model Camera {
   pky       Int     @default(autoincrement()) @id
   cameraId  String  @unique()
-  name      String
   lat       Decimal
   long      Decimal
   ctm       BigInt

@@ -32,12 +32,13 @@ export class GovSgTrafficTask implements ScheduleTask {
 
   initiateJob(frequency: CronTime): CronJob {
     this.cronJob = new CronJob(frequency.sendAt(), async () => {
+      this.logger.log('Executing Gov SG Traffic API...')
       const currentTime = this.datetimeService.getCurrentTimestamp()
 
       let trafficCaptures: GovSgTrafficCapture = null
       try {
         const govResponse = await this.govSgTrafficService.retrieveTransportTrafficImages(currentTime)
-        trafficCaptures = govResponse.items
+        trafficCaptures = govResponse.items[0]
       } catch (error) {
         this.logger.error('Unable to retrieve data from Gov SG.')
         this.logger.error(error)
