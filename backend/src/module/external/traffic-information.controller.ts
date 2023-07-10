@@ -19,6 +19,7 @@ export class TrafficInformationController {
   }
 
   @Get('cameras')
+  @Version('1')
   async retrieveListOfCameras (@Query('area') area: string) {
     if (!area) {
       throw new BadRequestException('Area must be given.')
