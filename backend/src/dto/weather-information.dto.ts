@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsNumber, IsOptional, IsString } from "class-validator"
+import { ArrayMaxSize, IsArray, IsNumber, IsOptional, IsString } from "class-validator"
 
 export class WeatherRequestDto {
   @ApiProperty()
@@ -18,6 +18,12 @@ export class WeatherRequestDto {
 }
 
 export class WeatherListRequestDto {
+  @ApiProperty()
+  @IsArray()
+  @IsOptional()
+  @ArrayMaxSize(3)
+  areas: string[]
+
   @ApiProperty()
   @IsOptional()
   @IsNumber()

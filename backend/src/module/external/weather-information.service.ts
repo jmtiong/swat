@@ -66,6 +66,12 @@ export class WeatherInformationServiceImpl implements WeatherInformationService 
       }
     }
 
+    if (requestDto.areas && requestDto.areas.length > 0) {
+      filterArgs.where.name = {
+        in: requestDto.areas
+      }
+    }
+
     if (requestDto.datetime) {
       filterArgs.include.weatherForecast = {
         where: {
