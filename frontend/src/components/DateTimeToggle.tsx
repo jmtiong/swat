@@ -12,12 +12,12 @@ const DateTimeToggle: FC = () => {
 
   return (
     <>
-      <Row>
+      {/* <Row>
         <Col span={24}>
           <Switch defaultChecked onChange={changeDatePicker} checkedChildren="Date Time" unCheckedChildren="Date"></Switch>
         </Col>
-      </Row>
-      <Row>
+      </Row> */}
+      <Row style={{ padding: '10px'}}>
         <Col span={24}>
           <DatePicker
             placeholder={toggle === 'Date Time' ? 'Select Date Time' : 'Select Date'}
