@@ -1,14 +1,16 @@
-import React, { FC } from 'react';
-import { Button, DatePicker, TimePicker } from 'antd';
+import { FC, useEffect, useState } from 'react';
 import './App.css';
-import DateTimeToggle from './components/DateTimeToggle';
+import WebLayout from './layouts/WebLayout';
+import { APIConfig } from './data/APIConfig';
+import MainContext from './context/MainContext';
 
 const App: FC = () => {
+  APIConfig.configureOpenAPI()
   return (
     <div className="App">
-      <Button type='primary'>Button</Button>
-      <DatePicker showTime={true}></DatePicker>
-      <DateTimeToggle></DateTimeToggle>
+      <MainContext>
+        <WebLayout></WebLayout>
+      </MainContext>
     </div>
   );
 }
