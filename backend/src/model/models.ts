@@ -37,6 +37,10 @@ export class AreaModel {
   }
 }
 
+export class AreaWithWeatherModel extends AreaModel{
+  weatherForecast: WeatherForecastModel[]
+}
+
 export class CameraModel {
   pky: number
   ctm: number

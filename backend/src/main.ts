@@ -14,8 +14,7 @@ import express from 'express'
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   app.enableVersioning({
     type: VersioningType.URI,
@@ -44,6 +43,7 @@ async function bootstrap() {
 
   document.components.schemas = Object.assign({}, document.components.schemas || {}, schemas)
 
-  SwaggerModule.setup('/api', app, document)
+  SwaggerModule.setup('api', app, document)
+  await app.listen(3000);
 }
 bootstrap();

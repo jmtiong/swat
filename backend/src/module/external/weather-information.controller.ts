@@ -1,7 +1,9 @@
 import { Body, Controller, Inject, Post, Version } from "@nestjs/common";
 import { WEATHER_INFORMATION_SERVICE, WeatherInformationService } from "./weather-information.interface";
-import { ApiBody, ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { WeatherListRequestDto, WeatherRequestDto } from "@/dto/weather-information.dto";
+import { AreaWithWeatherModel } from "@/model/models";
+import { AreaWithWeatherDto } from "@/dto/area.dto";
 
 @ApiTags('Environment')
 @Controller('environment')
@@ -12,6 +14,7 @@ export class WeatherInformationController {
 
   @Post('2-hour-area-weather-forecast')
   @ApiBody({ type: WeatherListRequestDto })
+  @ApiOkResponse({ type: AreaWithWeatherDto, isArray: true })
   @Version('1')
   async retrieveListOfAreaWeatherForecast (@Body() weatherRequestDto: WeatherListRequestDto) {
     return this.weatherInformationService.retrieveListOfWeatherForecastInformation(weatherRequestDto)
