@@ -17,12 +17,12 @@ const WeatherDisplay = () => {
     if (!from || !to) {
       return 'No date is available.'
     }
-    return`${new Date(from).toLocaleDateString()} ${new Date(from).toLocaleTimeString()} - ${new Date(to).toLocaleTimeString()}`
+    return `${new Date(from).toLocaleDateString()} ${new Date(from).toLocaleTimeString()} - ${new Date(to).toLocaleTimeString()}`
   }
 
   const weatherColourCode = (forecast: string) => {
     switch (forecast) {
-      default: 
+      default:
         return 'green'
     }
   }
@@ -71,9 +71,9 @@ const WeatherDisplay = () => {
         <Descriptions title={currentSelectedArea.name}>
         </Descriptions>
         <Timeline
-        mode="left"
-        items={timeline}
-      />
+          mode="left"
+          items={timeline}
+        />
       </Row>
     </>
   )
