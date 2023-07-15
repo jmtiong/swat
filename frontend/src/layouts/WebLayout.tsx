@@ -10,33 +10,32 @@ import CameraDisplay from "../components/CameraDisplay"
 import WeatherDisplay from "../components/WeatherDisplay"
 
 const WebLayout = () => {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
-
   const setAreasWithWeather = useContextSelector(SwatContext, (state) => state.setAreaWeathers)
   const setFilteredAreas = useContextSelector(SwatContext, (state) => state.setFilteredAreas)
   const datetime = useContextSelector(SwatContext, (state) => state.datetime)
-  const { isLoading, setIsLoading, loadingReducer } = useContextSelector(SwatContext, ({ isLoading, setIsLoading, loadingReducer }) => { return { isLoading, setIsLoading, loadingReducer } })
+  const { isLoading, setIsLoading } = useContextSelector(SwatContext, ({ isLoading, setIsLoading }) => { return { isLoading, setIsLoading } })
   useEffect(() => {
     (async () => {
       try {
-        setIsLoading(loadingReducer(isLoading, 'WEB_LAYOUT', 'ADD'))
+        setIsLoading(true)
         const areasWithWeathers = await EnvironmentService.retrieveListOfAreaWeatherForecast({
           datetime
         })
         setAreasWithWeather(areasWithWeathers)
         setFilteredAreas(areasWithWeathers)
+        console.log(isLoading)
       } catch (error) {
       } finally {
-        setIsLoading(loadingReducer(isLoading, 'WEB_LAYOUT', 'REMOVE'))
+        console.log('is even running?')
+        setIsLoading(false)
+        console.log(isLoading)
       }
 
     })()
   }, [datetime])
 
   return (
-    <Spin spinning={isLoading.length > 0}>
+    <Spin spinning={isLoading}>
       <Layout hasSider>
         <Content style={{ height: '100vh'}}>
           <Layout>

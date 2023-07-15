@@ -10,12 +10,12 @@ const CameraDisplay = () => {
   const trafficCaptures = useContextSelector(SwatContext, (state) => state.trafficCapture)
   const setTrafficCapture = useContextSelector(SwatContext, (state) => state.setTrafficCapture)
   const datetime = useContextSelector(SwatContext, (state) => state.datetime)
-  const { isLoading, setIsLoading, loadingReducer } = useContextSelector(SwatContext, ({ isLoading, setIsLoading, loadingReducer }) => { return { isLoading, setIsLoading, loadingReducer } })
+  const { isLoading, setIsLoading } = useContextSelector(SwatContext, ({ isLoading, setIsLoading }) => { return { isLoading, setIsLoading } })
 
   useEffect(() => {
     const getCaptures = async () => {
       try {
-        setIsLoading(loadingReducer(isLoading, 'CAMERA_DISPLAY', 'ADD'))
+        setIsLoading(true)
         const trafficCaptures = await TransportService.retrieveListOfTrafficCaptures({
           cameraIds: cameras.map(camera => camera.cameraId),
           datetime
@@ -24,7 +24,7 @@ const CameraDisplay = () => {
         setTrafficCapture(trafficCaptures)
       } catch (error) {
       } finally {
-        setIsLoading(loadingReducer(isLoading, 'CAMERA_DISPLAY', 'REMOVE'))
+        setIsLoading(false)
       }
     }
 

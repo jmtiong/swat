@@ -9,7 +9,7 @@ const AreaDisplay = () => {
   const filteredAreas = useContextSelector(SwatContext, (state) => state.filteredAreas)
   const setFilteredAreas = useContextSelector(SwatContext, (state) => state.setFilteredAreas)
   const setCurrentSelectedArea = useContextSelector(SwatContext, (state) => state.setCurrentSelectedArea)
-  const { isLoading, setIsLoading, loadingReducer } = useContextSelector(SwatContext, ({ isLoading, setIsLoading, loadingReducer }) => { return { isLoading, setIsLoading, loadingReducer } })
+  const { isLoading, setIsLoading } = useContextSelector(SwatContext, ({ isLoading, setIsLoading }) => { return { isLoading, setIsLoading } })
 
   const options = areas.map(({ pky, name }) => {
     return {
@@ -37,13 +37,13 @@ const AreaDisplay = () => {
   const setCameras = useContextSelector(SwatContext, (state) => state.setCameras)
   const getCameras = async (area: AreaWithWeatherDto) => {
     try {
-      setIsLoading(loadingReducer(isLoading, 'AREA_DISPLAY', 'ADD'))
+      setIsLoading(true)
       setCurrentSelectedArea(area)
       const cameras = await TransportService.retrieveListOfCameras(area.name)
       setCameras(cameras)
     } catch (error) {
     } finally {
-      setIsLoading(loadingReducer(isLoading, 'AREA_DISPLAY', 'REMOVE'))
+      setIsLoading(false)
     }
   }
 

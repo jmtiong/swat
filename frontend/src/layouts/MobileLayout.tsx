@@ -17,11 +17,11 @@ const MobileLayout = () => {
   const setAreasWithWeather = useContextSelector(SwatContext, (state) => state.setAreaWeathers)
   const setFilteredAreas = useContextSelector(SwatContext, (state) => state.setFilteredAreas)
   const datetime = useContextSelector(SwatContext, (state) => state.datetime)
-  const { isLoading, setIsLoading, loadingReducer } = useContextSelector(SwatContext, ({ isLoading, setIsLoading, loadingReducer }) => { return { isLoading, setIsLoading, loadingReducer } })
+  const { isLoading, setIsLoading } = useContextSelector(SwatContext, ({ isLoading, setIsLoading }) => { return { isLoading, setIsLoading } })
   useEffect(() => {
     (async () => {
       try {
-        setIsLoading(loadingReducer(isLoading, 'WEB_LAYOUT', 'ADD'))
+        setIsLoading(true)
         const areasWithWeathers = await EnvironmentService.retrieveListOfAreaWeatherForecast({
           datetime
         })
@@ -29,14 +29,14 @@ const MobileLayout = () => {
         setFilteredAreas(areasWithWeathers)
       } catch (error) {
       } finally {
-        setIsLoading(loadingReducer(isLoading, 'WEB_LAYOUT', 'REMOVE'))
+        setIsLoading(false)
       }
 
     })()
   }, [datetime])
 
   return (
-    <Spin spinning={isLoading.length > 0}>
+    <Spin spinning={isLoading}>
       <Layout hasSider>
         <Content style={{ height: '100vh'}}>
           <Layout>

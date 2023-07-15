@@ -19,9 +19,8 @@ export type SwatModelType = {
   setTrafficCapture: React.Dispatch<React.SetStateAction<TrafficCaptureDto[]>>
   datetime: number | undefined
   setDatetime: React.Dispatch<React.SetStateAction<number | undefined>>
-  isLoading: string[]
-  setIsLoading: React.Dispatch<React.SetStateAction<string[]>>
-  loadingReducer: (state: string[], value: string, action: 'ADD' | 'REMOVE') => string[]
+  isLoading: boolean
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const SwatContext = createContext<SwatModelType>({} as SwatModelType)
@@ -29,10 +28,6 @@ export const SwatContext = createContext<SwatModelType>({} as SwatModelType)
 export type WTContext = {
   children: React.ReactNode
 };
-
-const addLoadingAction = () => ({ type: 'ADD' })
-const removeLoadingAction = () => ({ type: 'REMOVE' })
-
 
 const MainContext = ({children}: WTContext) => {
   const [areaWeathers, setAreaWeathers] = useState<AreaWithWeatherDto[]>([])
@@ -43,21 +38,20 @@ const MainContext = ({children}: WTContext) => {
   const [currentCamera, setCurrentCamera] = useState<CameraDto>({} as CameraDto)
   const [trafficCapture, setTrafficCapture] = useState<TrafficCaptureDto[]>([])
   const [datetime, setDatetime] = useState<number | undefined>(undefined)
-  const [isLoading, setIsLoading] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   
-  const loadingReducer = (state: string[], value: string, action: 'ADD' | 'REMOVE') => {
-    switch (action) {
-      case 'ADD':
-        state.push(value)
-        break
-      case 'REMOVE':
-        const index = state.indexOf(value)
-        if (index !== -1) {
-          state.splice(index, 1)
-        }
-    }
-      return state
-  }
+  // const loadingReducer = (state: string[], value: string, action: 'ADD' | 'REMOVE') => {
+  //   switch (action) {
+  //     case 'ADD':
+  //       if (!state.includes(value)) {
+  //         state.push(value)
+  //       }
+  //       break
+  //     case 'REMOVE':
+  //       state = state.filter(loading => loading !== value)
+  //   }
+  //     return state
+  // }
   return (
     <SwatContext.Provider value={{
       areaWeathers, setAreaWeathers,
@@ -68,7 +62,7 @@ const MainContext = ({children}: WTContext) => {
       currentCamera, setCurrentCamera,
       trafficCapture, setTrafficCapture,
       datetime, setDatetime,
-      isLoading, setIsLoading, loadingReducer
+      isLoading, setIsLoading
     }}>
       { children }
     </SwatContext.Provider>

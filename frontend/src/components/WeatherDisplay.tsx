@@ -10,7 +10,7 @@ const WeatherDisplay = () => {
   const weathers = useContextSelector(SwatContext, (state) => state.weathers)
   const setWeathers = useContextSelector(SwatContext, (state) => state.setWeathers)
   const datetime = useContextSelector(SwatContext, (state) => state.datetime)
-  const { isLoading, setIsLoading, loadingReducer } = useContextSelector(SwatContext, ({ isLoading, setIsLoading, loadingReducer }) => { return { isLoading, setIsLoading, loadingReducer } })
+  const { isLoading, setIsLoading } = useContextSelector(SwatContext, ({ isLoading, setIsLoading }) => { return { isLoading, setIsLoading } })
 
   // @TODO: Refactor to a util class
   const formatDate = (from: number | undefined, to: number | undefined) => {
@@ -46,7 +46,7 @@ const WeatherDisplay = () => {
 
     const retrieveAreaWeatherList = async () => {
       try {
-        setIsLoading(loadingReducer(isLoading, 'WEATHER_DISPLAY', 'ADD'))
+        setIsLoading(true)
         const areas = await EnvironmentService.retrieveListOfAreaWeatherForecast({
           areas: [currentSelectedArea.name],
           datetime
@@ -58,7 +58,7 @@ const WeatherDisplay = () => {
         }
       } catch (error) {
       } finally {
-        setIsLoading(loadingReducer(isLoading, 'WEATHER_DISPLAY', 'REMOVE'))
+        setIsLoading(false)
       }
     }
 
