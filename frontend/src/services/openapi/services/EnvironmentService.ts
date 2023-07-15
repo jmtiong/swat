@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { AreaWithWeatherDto } from '../models/AreaWithWeatherDto';
+import type { WeatherForecastDto } from '../models/WeatherForecastDto';
 import type { WeatherListRequestDto } from '../models/WeatherListRequestDto';
 import type { WeatherRequestDto } from '../models/WeatherRequestDto';
 
@@ -30,12 +31,12 @@ export class EnvironmentService {
 
     /**
      * @param requestBody
-     * @returns any
+     * @returns WeatherForecastDto
      * @throws ApiError
      */
     public static retrieveAreaWeatherForecast(
         requestBody: WeatherRequestDto,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<Array<WeatherForecastDto>> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v1/environment/2-hour-forecast',
