@@ -18,7 +18,7 @@ export class WeatherRequestDto {
 }
 
 export class WeatherListRequestDto {
-  @ApiProperty()
+  @ApiProperty({ type: String, isArray: true})
   @IsArray()
   @IsOptional()
   @ArrayMaxSize(3)

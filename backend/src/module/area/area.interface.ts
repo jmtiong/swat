@@ -11,7 +11,7 @@ export type AreaWithWeathers = Prisma.AreaGetPayload<typeof areaWithWeathers>
 export interface AreaService {
   countNumberOfAreas (): Promise<number>
   retrieveListOfAreaWithWeathers (filter: Prisma.AreaFindManyArgs): Promise<AreaWithWeathers[]>
-  retrieveArea (name: string): Promise<Area>
+  retrieveArea (name: string): Promise<AreaWithWeathers>
   createArea (area: Area): Promise<Area>
   createManyAreas (areas: Area[]): Promise<number>
   updateArea (pky: number, area: Area): Promise<Area>

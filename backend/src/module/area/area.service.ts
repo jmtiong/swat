@@ -20,6 +20,9 @@ export class AreaServiceImpl implements AreaService {
     return this.prismaService.area.findUnique({
       where: {
         name
+      },
+      include: {
+        weatherForecast: true
       }
     })
   }
