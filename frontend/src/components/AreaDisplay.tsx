@@ -2,6 +2,7 @@ import { Card, Select, Space } from "antd";
 import { useContextSelector } from "use-context-selector";
 import { SwatContext } from "../context/MainContext";
 import { AreaWithWeatherDto, TransportService } from "../services/openapi";
+import MediaQuery from "react-responsive";
 
 const AreaDisplay = () => {
   const areas = useContextSelector(SwatContext, (state) => state.areaWeathers)
@@ -25,6 +26,14 @@ const AreaDisplay = () => {
     setFilteredAreas(areas.filter(area => value.includes(area.pky)))
   }
 
+  const mobileSelect = (value: number) => {
+    const area = areas.find(area => value === area.pky)
+    if (area) {
+      setCurrentSelectedArea(area)
+      getCameras(area)
+    }
+  }
+
   const setCameras = useContextSelector(SwatContext, (state) => state.setCameras)
   const getCameras = async (area: AreaWithWeatherDto) => {
     try {
@@ -40,6 +49,7 @@ const AreaDisplay = () => {
 
   return (
     <>
+    <MediaQuery minWidth={1000}>
       <Select
         showSearch
         mode="multiple"
@@ -57,6 +67,22 @@ const AreaDisplay = () => {
       <Space size={4} wrap>
         {filteredAreas.map(area => <Card key={area.pky} size="small" onClick={e => getCameras(area)} hoverable={true}>{area.name}</Card>)}
       </Space>
+    </MediaQuery>
+    <MediaQuery maxWidth={999}>
+      <Select
+        showSearch
+        size="middle"
+        placeholder="Search and select an area!"
+        style={{ width: '100%', padding: '10px 10px' }}
+        options={options}
+        optionFilterProp="children"
+        onChange={mobileSelect}
+        filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input)}
+        filterSort={(optionA, optionB) =>
+          (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+        }
+      ></Select>
+    </MediaQuery>
     </>
   )
 }

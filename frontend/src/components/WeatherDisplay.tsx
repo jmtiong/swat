@@ -67,7 +67,7 @@ const WeatherDisplay = () => {
 
   return (
     <>
-      <Row>
+      <Row style={{ padding: '10px'}}>
         <Descriptions title={currentSelectedArea.name}>
         </Descriptions>
         <Timeline

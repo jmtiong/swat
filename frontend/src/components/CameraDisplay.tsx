@@ -47,7 +47,7 @@ const CameraDisplay = () => {
   if (cameras.length === 0) {
     return (
       <>
-        <Space>
+        <Space style={{ padding: '10px'}}>
           <Descriptions>
             <Descriptions.Item>
               There are no cameras to display.
@@ -60,7 +60,7 @@ const CameraDisplay = () => {
 
   return (
     <>
-    <Row style={{ paddingTop: '10px' }}>
+    <Row style={{ padding: '10px' }}>
       <Col span={2}></Col>
       <Col span={20}>
         <Space wrap>
