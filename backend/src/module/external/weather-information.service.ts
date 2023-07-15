@@ -7,12 +7,14 @@ import { AREA_SERVICE, AreaService, AreaWithWeathers } from "../area/area.interf
 import { Prisma, WeatherForecast } from "@prisma/client";
 import { DatetimeService } from "@/util/date-time.service";
 import { WeatherCastType } from "@/enum/enum";
+import { GOV_SG_WEATHER_TASK, GovSgWeatherTask } from "@/scheduler/gov-sg-weather-task.service";
 
 @Injectable()
 export class WeatherInformationServiceImpl implements WeatherInformationService {
   constructor (
     @Inject(WEATHER_FORECAST_SERVICE) protected readonly weatherForecastService: WeatherForecastService,
     @Inject(AREA_SERVICE) protected readonly areaService: AreaService,
+    @Inject(GOV_SG_WEATHER_TASK) protected readonly govSgWeatherTask: GovSgWeatherTask,
     protected readonly dateService: DatetimeService
   ) {}
   async retrieveAreaWeatherForecastInformation(requestDto: WeatherRequestDto): Promise<WeatherForecast[]> {
@@ -27,7 +29,7 @@ export class WeatherInformationServiceImpl implements WeatherInformationService 
         castType: WeatherCastType.TWO_HOUR
       },
       orderBy: {
-        validTo: 'asc'
+        validTo: 'desc'
       }
     }
     if (requestDto.datetime) {
@@ -48,20 +50,29 @@ export class WeatherInformationServiceImpl implements WeatherInformationService 
       }
     }
 
+    let weather = await this.weatherForecastService.retrieveWeatherForecast(area.pky)
+
+    if (!weather) {
+      await this.govSgWeatherTask.executeTask(requestDto.datetime)
+    }
+
     return this.weatherForecastService.retrieveListOfWeatherForecast(filterArgs)
   }
-  retrieveListOfWeatherForecastInformation(requestDto: WeatherListRequestDto): Promise<AreaWithWeathers[]> {
+
+  async retrieveListOfWeatherForecastInformation(requestDto: WeatherListRequestDto): Promise<AreaWithWeathers[]> {
 
     // Quick and naive way of constructing filters
     const filterArgs: Prisma.AreaFindManyArgs = {
+      where: {},
       include: {
         weatherForecast: {
           where: {
             castType: WeatherCastType.TWO_HOUR
           },
           orderBy: {
-            validTo: 'asc'
-          }
+            validTo: 'desc'
+          },
+          take: 1
         }
       }
     }
@@ -76,9 +87,13 @@ export class WeatherInformationServiceImpl implements WeatherInformationService 
       filterArgs.include.weatherForecast = {
         where: {
           castType: WeatherCastType.TWO_HOUR,
-          validFrom: { gte: requestDto.datetime },
-          validTo: { lte: requestDto.datetime }
-        }
+          validFrom: { lte: requestDto.datetime },
+          validTo: { gte: requestDto.datetime }
+        },
+        orderBy: {
+          validTo: 'desc'
+        },
+        take: 1
       }
     } else if (requestDto.date) {
       const timestamp = this.dateService.resetTimestampToZeros(requestDto.date)
@@ -86,11 +101,24 @@ export class WeatherInformationServiceImpl implements WeatherInformationService 
       filterArgs.include.weatherForecast = {
         where: {
           castType: WeatherCastType.TWO_HOUR,
-          validFrom: { gte: timestamp },
-          validTo: { lt: nextDay }
-        }
+          validFrom: { lte: timestamp },
+          validTo: { gt: nextDay }
+        },
+        orderBy: {
+          validTo: 'desc'
+        },
+        take: 1
       }
     }
-    return this.areaService.retrieveListOfAreaWithWeathers(filterArgs)
+    let areas = await this.areaService.retrieveListOfAreaWithWeathers(filterArgs)
+
+    const triggerAPI = areas.some(area => area.weatherForecast.length === 0)
+    if (triggerAPI) {
+      await this.govSgWeatherTask.executeTask(requestDto.datetime)
+    }
+
+    areas = await this.areaService.retrieveListOfAreaWithWeathers(filterArgs)
+
+    return areas
   }
 }

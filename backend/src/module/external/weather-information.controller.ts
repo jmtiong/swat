@@ -3,7 +3,7 @@ import { WEATHER_INFORMATION_SERVICE, WeatherInformationService } from "./weathe
 import { ApiBody, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { WeatherListRequestDto, WeatherRequestDto } from "@/dto/weather-information.dto";
 import { AreaWithWeatherModel } from "@/model/models";
-import { AreaWithWeatherDto } from "@/dto/area.dto";
+import { AreaWithWeatherDto, WeatherForecastDto } from "@/dto/area.dto";
 
 @ApiTags('Environment')
 @Controller('environment')
@@ -22,6 +22,7 @@ export class WeatherInformationController {
 
   @Post('2-hour-forecast')
   @ApiBody({ type: WeatherRequestDto })
+  @ApiOkResponse({ type: WeatherForecastDto, isArray: true })
   @Version('1')
   async retrieveAreaWeatherForecast (@Body() requestDto: WeatherRequestDto) {
     return this.weatherInformationService.retrieveAreaWeatherForecastInformation(requestDto)
