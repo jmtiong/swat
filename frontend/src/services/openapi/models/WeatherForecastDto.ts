@@ -3,16 +3,16 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type TrafficCaptureDto = {
+export type WeatherForecastDto = {
     pky: number;
     ctm: number;
     utm: number;
-    url: string;
-    hash: string;
-    width: number;
-    height: number;
+    forecast: string;
+    castType: string;
+    lastUpdateTimestamp: number;
+    validFrom: number;
+    validTo: number;
     isArchived: boolean;
-    capturedTimestamp: number;
-    cameraPky: number;
+    areaPky: number;
 };
 

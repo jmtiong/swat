@@ -1,16 +1,69 @@
-import { Card, Space } from "antd";
+import { Card, Descriptions, Space } from "antd";
 import { useContextSelector } from "use-context-selector";
 import { SwatContext } from "../context/MainContext";
+import { useEffect } from "react";
+import { CameraDto, TransportService } from "../services/openapi";
+const { Meta } = Card;
 
 const CameraDisplay = () => {
   const cameras = useContextSelector(SwatContext, (state) => state.cameras)
+  const trafficCaptures = useContextSelector(SwatContext, (state) => state.trafficCapture)
+  const setTrafficCapture = useContextSelector(SwatContext, (state) => state.setTrafficCapture)
+  const datetime = useContextSelector(SwatContext, (state) => state.datetime)
+  useEffect(() => {
+    const getCaptures = async () => {
+      const trafficCaptures = await TransportService.retrieveListOfTrafficCaptures({
+        cameraIds: cameras.map(camera => camera.cameraId),
+        datetime
+      })
+
+      setTrafficCapture(trafficCaptures)
+    }
+
+    getCaptures()
+  })
+
+  const retrieveCapture = (camera: CameraDto) => {
+    const capture = trafficCaptures.find(capture => capture.cameraPky === camera.pky)
+    return capture
+  }
+
+  // @TODO: Refactor to a util class
+  const formatDate = (timestamp: number | undefined) => {
+    if (!timestamp) {
+      return 'No date is captured.'
+    }
+    return`${new Date(timestamp).toLocaleDateString()} ${new Date(timestamp).toLocaleTimeString()}`
+  }
+
+  if (cameras.length === 0) {
+    return (
+      <>
+        <Space>
+          <Descriptions>
+            <Descriptions.Item>
+              There are no cameras to display.
+            </Descriptions.Item>
+          </Descriptions>
+        </Space>
+      </>
+    )
+  }
+
   return (
     <>
-      <Space size={4} wrap>
+      <Space size={8} wrap>
         {cameras.map(camera =>
-          <Card key={camera.pky} size="small" title={`Camera ID: ${camera.cameraId}`}>
-            <p>Latitude: {camera.lat}</p>
-            <p>Longitude: {camera.long}</p>
+          <Card
+            key={camera.pky}
+            size="small"
+            style={{ width: '480px' }}
+            cover={<img alt='Traffic Capture' src={retrieveCapture(camera)?.url}></img>}
+          >
+            <Meta 
+              title={`Camera ID: ${camera.cameraId}`}
+              description={`Captured Timestamp: ${formatDate(retrieveCapture(camera)?.capturedTimestamp)}`}
+            ></Meta>
           </Card>)}
       </Space>
     </>

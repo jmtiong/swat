@@ -13,8 +13,10 @@ export type SwatModelType = {
   setCameras: React.Dispatch<React.SetStateAction<CameraDto[]>>
   currentCamera: CameraDto
   setCurrentCamera: React.Dispatch<React.SetStateAction<CameraDto>>
-  trafficCapture: TrafficCaptureDto
-  setTrafficCapture: React.Dispatch<React.SetStateAction<TrafficCaptureDto>>
+  trafficCapture: TrafficCaptureDto[]
+  setTrafficCapture: React.Dispatch<React.SetStateAction<TrafficCaptureDto[]>>
+  datetime: number | undefined
+  setDatetime: React.Dispatch<React.SetStateAction<number | undefined>>
 }
 
 export const SwatContext = createContext<SwatModelType>({} as SwatModelType)
@@ -29,7 +31,8 @@ const MainContext = ({children}: WTContext) => {
   const [filteredAreas, setFilteredAreas] = useState<AreaWithWeatherDto[]>([])
   const [currentSelectedArea, setCurrentSelectedArea] = useState<AreaWithWeatherDto>({} as AreaWithWeatherDto)
   const [currentCamera, setCurrentCamera] = useState<CameraDto>({} as CameraDto)
-  const [trafficCapture, setTrafficCapture] = useState<TrafficCaptureDto>({} as TrafficCaptureDto)
+  const [trafficCapture, setTrafficCapture] = useState<TrafficCaptureDto[]>([])
+  const [datetime, setDatetime] = useState<number | undefined>(undefined)
 
   return (
     <SwatContext.Provider value={{
@@ -38,7 +41,8 @@ const MainContext = ({children}: WTContext) => {
       filteredAreas, setFilteredAreas,
       currentSelectedArea, setCurrentSelectedArea,
       currentCamera, setCurrentCamera,
-      trafficCapture, setTrafficCapture
+      trafficCapture, setTrafficCapture,
+      datetime, setDatetime
     }}>
       { children }
     </SwatContext.Provider>

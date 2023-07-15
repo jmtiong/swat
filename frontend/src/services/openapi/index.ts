@@ -10,7 +10,9 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 export type { AreaWithWeatherDto } from './models/AreaWithWeatherDto';
 export type { CameraDto } from './models/CameraDto';
 export type { TrafficCaptureDto } from './models/TrafficCaptureDto';
+export type { TrafficListRequestDto } from './models/TrafficListRequestDto';
 export type { TrafficRequestDto } from './models/TrafficRequestDto';
+export type { WeatherForecastDto } from './models/WeatherForecastDto';
 export type { WeatherListRequestDto } from './models/WeatherListRequestDto';
 export type { WeatherRequestDto } from './models/WeatherRequestDto';
 

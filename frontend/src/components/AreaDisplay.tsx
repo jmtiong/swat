@@ -1,13 +1,13 @@
-import { Avatar, Card, Select, Space } from "antd";
+import { Card, Select, Space } from "antd";
 import { useContextSelector } from "use-context-selector";
 import { SwatContext } from "../context/MainContext";
 import { AreaWithWeatherDto, TransportService } from "../services/openapi";
-import { useGetAreaCameras } from "../hooks/useCameras";
 
 const AreaDisplay = () => {
   const areas = useContextSelector(SwatContext, (state) => state.areaWeathers)
   const filteredAreas = useContextSelector(SwatContext, (state) => state.filteredAreas)
   const setFilteredAreas = useContextSelector(SwatContext, (state) => state.setFilteredAreas)
+  const setCurrentSelectedArea = useContextSelector(SwatContext, (state) => state.setCurrentSelectedArea)
   const options = areas.map(({ pky, name }) => {
     return {
       value: pky,
@@ -25,7 +25,7 @@ const AreaDisplay = () => {
 
   const setCameras = useContextSelector(SwatContext, (state) => state.setCameras)
   const getCameras = async (area: AreaWithWeatherDto) => {
-    console.log(area)
+    setCurrentSelectedArea(area)
     const cameras = await TransportService.retrieveListOfCameras(area.name)
     setCameras(cameras)
   }
@@ -47,7 +47,7 @@ const AreaDisplay = () => {
         }
       ></Select>
       <Space size={4} wrap>
-        {filteredAreas.map(area => <Card key={area.pky} size="small" onClick={e => getCameras(area)}>{area.name}</Card>)}
+        {filteredAreas.map(area => <Card key={area.pky} size="small" onClick={e => getCameras(area)} hoverable={true}>{area.name}</Card>)}
       </Space>
     </>
   )

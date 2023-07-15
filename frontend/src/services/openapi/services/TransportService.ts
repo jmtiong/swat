@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { CameraDto } from '../models/CameraDto';
 import type { TrafficCaptureDto } from '../models/TrafficCaptureDto';
+import type { TrafficListRequestDto } from '../models/TrafficListRequestDto';
 import type { TrafficRequestDto } from '../models/TrafficRequestDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -23,6 +24,22 @@ export class TransportService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v1/transport/image',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+
+    /**
+     * @param requestBody
+     * @returns TrafficCaptureDto
+     * @throws ApiError
+     */
+    public static retrieveListOfTrafficCaptures(
+        requestBody: TrafficListRequestDto,
+    ): CancelablePromise<Array<TrafficCaptureDto>> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/v1/transport/images',
             body: requestBody,
             mediaType: 'application/json',
         });
