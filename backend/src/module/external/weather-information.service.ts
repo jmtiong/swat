@@ -77,6 +77,10 @@ export class WeatherInformationServiceImpl implements WeatherInformationService 
       }
     }
 
+    if (requestDto.areas) {
+      requestDto.areas = requestDto.areas.filter(area => !!area)
+    }
+
     if (requestDto.areas && requestDto.areas.length > 0) {
       filterArgs.where.name = {
         in: requestDto.areas
