@@ -87,6 +87,10 @@ export class GovSgWeatherTask implements ScheduleTask {
           const updateForecast = new WeatherForecastModel()
           const area = areas.find(area => area.name === forecast.area)
           const currentForecast = weatherForecasts.find(existingCast => existingCast.areaPky == area.pky)
+          if (!currentForecast) {
+            this.logger.log(`Area PKY: ${area.pky} cannot be found for weatherForecasts`)
+            return
+          }
           updateForecast.populateFromGovSgData(weatherList, forecast, area)
           updateForecast.isArchived = true
           return this.weatherForecastService.updateWeatherForecastRecord(currentForecast.pky, updateForecast.sanitizeToDatabaseFormat() as WeatherForecast)
