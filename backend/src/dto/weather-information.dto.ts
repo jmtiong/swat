@@ -1,3 +1,4 @@
+import { IsBeforeNow } from "@/decorator/is-after-now.decorator"
 import { ApiProperty } from "@nestjs/swagger"
 import { ArrayMaxSize, IsArray, IsNumber, IsOptional, IsString } from "class-validator"
 
@@ -9,11 +10,13 @@ export class WeatherRequestDto {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
+  @IsBeforeNow()
   datetime: number
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
+  @IsBeforeNow()
   date: number
 }
 
@@ -27,11 +30,13 @@ export class WeatherListRequestDto {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
+  @IsBeforeNow()
   datetime: number
 
   @ApiProperty()
   @IsOptional()
   @IsNumber()
+  @IsBeforeNow()
   date: number
 }
 

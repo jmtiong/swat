@@ -41,6 +41,9 @@ export class GovSgWeatherTask implements ScheduleTask {
     const areas = await this.areaService.retrieveListOfAreaWithWeathers({})
     const weatherTimingList = weatherResponse.items
     return Promise.all(weatherTimingList.map(async (weatherList) => {
+      if (!weatherList.validPeriod) {
+        return
+      }
       const { start, end } = weatherList.validPeriod
       const validFrom = DatetimeService.convertDateToTimestamp(start)
       const validTo = DatetimeService.convertDateToTimestamp(end)
