@@ -1,7 +1,30 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class AreaWithWeatherDto {
+export class WeatherForecastDto {
   @ApiProperty()
+  pky: number;
+  @ApiProperty()
+  ctm: number;
+  @ApiProperty()
+  utm: number;
+  @ApiProperty()
+  forecast: string;
+  @ApiProperty()
+  castType: string;
+  @ApiProperty()
+  lastUpdateTimestamp: number;
+  @ApiProperty()
+  validFrom: number;
+  @ApiProperty()
+  validTo: number;
+  @ApiProperty()
+  isArchived: boolean;
+  @ApiProperty()
+  areaPky: number;
+}
+
+export class AreaWithWeatherDto {
+  @ApiProperty({ type: WeatherForecastDto, isArray: true })
   weatherForecast: WeatherForecastDto[];
   @ApiProperty()
   pky: number;
@@ -15,27 +38,4 @@ export class AreaWithWeatherDto {
   lat: number;
   @ApiProperty()
   long: number;
-}
-
-export class WeatherForecastDto {
-  @ApiProperty()
-  pky: number;
-  @ApiProperty()
-  ctm: number;
-  @ApiProperty()
-  utm: number;
-  @ApiProperty()
-  forecast: string;
-  @ApiProperty()
-  castType: string;
-  @ApiProperty()
-  lastUpdateTimestamp: string;
-  @ApiProperty()
-  validFrom: string;
-  @ApiProperty()
-  validTo: string;
-  @ApiProperty()
-  isArchived: boolean;
-  @ApiProperty()
-  areaPky: number;
 }

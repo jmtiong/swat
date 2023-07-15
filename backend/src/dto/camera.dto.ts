@@ -35,7 +35,7 @@ export class TrafficCaptureDto {
   @ApiProperty()
   isArchived: boolean;
   @ApiProperty()
-  capturedTimestamp: string;
+  capturedTimestamp: number;
   @ApiProperty()
   cameraPky: number;
 }

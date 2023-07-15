@@ -1,4 +1,4 @@
-import { TrafficRequestDto } from "@/dto/traffic-information.dto";
+import { TrafficListRequestDto, TrafficRequestDto } from "@/dto/traffic-information.dto";
 import { BadRequestException, Body, Controller, Get, Inject, Param, Post, Query, Version } from "@nestjs/common";
 import { ApiBody, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { TRAFFIC_INFORMATION_SERVICE, TrafficInformationService } from "./traffic-information.interface";
@@ -19,6 +19,14 @@ export class TrafficInformationController {
   @Version('1')
   async retrieveTrafficCapture (@Body() requestDto: TrafficRequestDto) {
     return this.trafficInformationService.retrieveCameraTrafficCapture(requestDto)
+  }
+
+  @Post('images')
+  @ApiBody({ type: TrafficListRequestDto })
+  @ApiOkResponse({ type: TrafficCaptureDto, isArray: true })
+  @Version('1')
+  async retrieveListOfTrafficCaptures (@Body() requestDto: TrafficListRequestDto) {
+    return this.trafficInformationService.retrieveCameraTrafficCaptureList(requestDto)
   }
 
   @Get('cameras')

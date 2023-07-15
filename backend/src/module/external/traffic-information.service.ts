@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { TrafficInformationService } from "./traffic-information.interface";
-import { TrafficRequestDto } from "@/dto/traffic-information.dto";
-import { Camera, TrafficCapture } from "@prisma/client";
+import { TrafficListRequestDto, TrafficRequestDto } from "@/dto/traffic-information.dto";
+import { Camera, Prisma, TrafficCapture } from "@prisma/client";
 import { CAMERA_SERVICE, CameraService } from "../camera/camera.interface";
 import { TRAFFIC_CAPTURE_SERVICE, TrafficCaptureService } from "../traffic-capture/traffic-capture.interface";
 import { AREA_SERVICE, AreaService } from "../area/area.interface";
@@ -33,5 +33,12 @@ export class TrafficInformationServiceImpl implements TrafficInformationService 
     }
 
     return this.trafficCaptureService.retrieveLastTrafficCaptureFromId(camera.cameraId, requestDto.datetime)
+  }
+  async retrieveCameraTrafficCaptureList(requestDto: TrafficListRequestDto): Promise<TrafficCapture[]> {
+    const trafficCaptures = await Promise.all(requestDto.cameraIds.map(async (id) => {
+      return this.trafficCaptureService.retrieveLastTrafficCaptureFromId(id, requestDto.datetime)
+    }))
+
+    return trafficCaptures
   }
 }
