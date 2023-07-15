@@ -4,5 +4,5 @@ import { CronJob, CronTime } from "cron";
 export interface ScheduleTask {
   setupSettings (jobSetting: SchedulerSetting)
   initiateJob (frequency: CronTime): CronJob
-  executeTask ()
+  executeTask (datetime: number)
 }

@@ -19,6 +19,16 @@ import { GovSgModule } from "@/integration/gov-sg.module";
       provide: GOV_SG_WEATHER_TASK,
       useClass: GovSgWeatherTask
     }
+  ],
+  exports: [
+    {
+      provide: GOV_SG_TRAFFIC_TASK,
+      useClass: GovSgTrafficTask
+    },
+    {
+      provide: GOV_SG_WEATHER_TASK,
+      useClass: GovSgWeatherTask
+    }
   ]
 })
 export class SchedulerModule {}

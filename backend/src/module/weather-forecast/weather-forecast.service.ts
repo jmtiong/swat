@@ -14,12 +14,20 @@ export class WeatherForecastServiceImpl implements WeatherForecastService {
     return this.prismaService.weatherForecast.findMany(filter)
   }
 
-  async retrieveWeatherForecast(pky: number) {
-    return this.prismaService.weatherForecast.findUnique({
+  async retrieveWeatherForecast(pky: number, datetime?: number) {
+    const filter: Prisma.WeatherForecastFindFirstArgs = {
       where: {
-        pky
+        areaPky: pky
+      },
+      orderBy: {
+        ctm: 'desc'
       }
-    })
+    }
+
+    if (datetime) {
+      filter.where.validFrom
+    }
+    return this.prismaService.weatherForecast.findFirst(filter)
   }
 
   async archiveWeatherForecast(pky: number) {

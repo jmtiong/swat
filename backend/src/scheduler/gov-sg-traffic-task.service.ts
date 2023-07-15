@@ -34,52 +34,51 @@ export class GovSgTrafficTask implements ScheduleTask {
     this.cronJob = new CronJob(frequency.sendAt(), async () => {
       this.logger.log('Executing Gov SG Traffic API...')
       const currentTime = this.datetimeService.getCurrentTimestamp()
-
-      let trafficCaptures: GovSgTrafficCapture = null
-      try {
-        const govResponse = await this.govSgTrafficService.retrieveTransportTrafficImages(currentTime)
-        trafficCaptures = govResponse.items[0]
-      } catch (error) {
-        this.logger.error('Unable to retrieve data from Gov SG.')
-        this.logger.error(error)
-      }
-
-      if (!trafficCaptures) {
-        this.logger.log('No captures to go through')
-        return
-      }
-
-      trafficCaptures.cameras.map(async (cameraCapture) => {
-        const { cameraId, imageMetadata } = cameraCapture
-        const { md5 } = imageMetadata 
-        const storedCapture = await this.trafficCaptureService.retrieveLastTrafficCaptureFromId(cameraCapture.cameraId)
-        const camera = await this.cameraService.retrieveCameraFromId(cameraId)
-
-        if (!storedCapture || storedCapture.hash !== md5) {
-          this.logger.log(`Generating new capture for pky: ${camera.pky}, camera id: ${camera.cameraId}.`)
-          const newCapture = new TrafficCaptureModel()
-          newCapture.populateFromGovSgData(cameraCapture, camera)
-          return this.trafficCaptureService.createTrafficCapture(newCapture.sanitizeToDatabaseFormat() as TrafficCapture)
-        }
-
-        if (storedCapture.isArchived) {
-          this.logger.log(`Already archived capture for pky: ${camera.pky}, camera id: ${camera.cameraId}.`)
-          return
-        }
-        
-        // storedCapture hash is the same, archive it.
-        this.logger.log(`Archiving camera capture for pky: ${camera.pky}, camera id: ${camera.cameraId}.`)
-        const existingCapture = new TrafficCaptureModel()
-        existingCapture.populateFromGovSgData(cameraCapture, camera)
-        existingCapture.isArchived = true
-        return this.trafficCaptureService.updateTrafficCapture(camera.pky, existingCapture.sanitizeToDatabaseFormat() as TrafficCapture)
-      })
+      this.executeTask(currentTime)
     })
 
     return this.cronJob
   }
-  executeTask() {
-    throw new Error("Method not implemented.");
+  async executeTask(datetime: number) {
+    let trafficCaptures: GovSgTrafficCapture = null
+    try {
+      const govResponse = await this.govSgTrafficService.retrieveTransportTrafficImages(datetime)
+      trafficCaptures = govResponse.items[0]
+    } catch (error) {
+      this.logger.error('Unable to retrieve data from Gov SG.')
+      this.logger.error(error)
+    }
+
+    if (!trafficCaptures) {
+      this.logger.log('No captures to go through')
+      return
+    }
+
+    return Promise.all(trafficCaptures.cameras.map(async (cameraCapture) => {
+      const { cameraId, imageMetadata } = cameraCapture
+      const { md5 } = imageMetadata 
+      const storedCapture = await this.trafficCaptureService.retrieveLastTrafficCaptureFromId(cameraCapture.cameraId, datetime)
+      const camera = await this.cameraService.retrieveCameraFromId(cameraId)
+
+      if (!storedCapture || storedCapture.hash !== md5) {
+        this.logger.log(`Generating new capture for pky: ${camera.pky}, camera id: ${camera.cameraId}.`)
+        const newCapture = new TrafficCaptureModel()
+        newCapture.populateFromGovSgData(cameraCapture, camera)
+        return this.trafficCaptureService.createTrafficCapture(newCapture.sanitizeToDatabaseFormat() as TrafficCapture)
+      }
+
+      if (storedCapture.isArchived) {
+        this.logger.log(`Already archived capture for pky: ${camera.pky}, camera id: ${camera.cameraId}.`)
+        return
+      }
+      
+      // storedCapture hash is the same, archive it.
+      this.logger.log(`Archiving camera capture for pky: ${camera.pky}, camera id: ${camera.cameraId}.`)
+      const existingCapture = new TrafficCaptureModel()
+      existingCapture.populateFromGovSgData(cameraCapture, camera)
+      existingCapture.isArchived = true
+      return this.trafficCaptureService.updateTrafficCapture(storedCapture.pky, existingCapture.sanitizeToDatabaseFormat() as TrafficCapture)
+    }))
   }
 
 }

@@ -25,9 +25,15 @@ export class TrafficCaptureImpl implements TrafficCaptureService {
       where: {
         cameraPky: camera.pky
       },
-      orderBy: {
-        capturedTimestamp: 'desc'
-      }
+      orderBy: [
+        {
+          capturedTimestamp: 'desc'
+        },
+        {
+          ctm: 'desc'
+        }
+      ]
+        
     }
 
     if (timestamp) {

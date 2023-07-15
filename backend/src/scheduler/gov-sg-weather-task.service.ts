@@ -31,67 +31,67 @@ export class GovSgWeatherTask implements ScheduleTask {
   initiateJob(frequency: CronTime): CronJob {
     this.cronJob = new CronJob(frequency.sendAt(), async () => {
       this.logger.log('Executing Gov SG Weather API...')
-      const weatherResponse = await this.govSgWeatherService.retrieveTwoHourForecasts()
-      const areas = await this.areaService.retrieveListOfAreaWithWeathers({})
-      const weatherTimingList = weatherResponse.items
-      weatherTimingList.map(async (weatherList) => {
-        const { start, end } = weatherList.validPeriod
-        const validFrom = DatetimeService.convertDateToTimestamp(start)
-        const validTo = DatetimeService.convertDateToTimestamp(end)
-        const weatherForecasts = await this.weatherForecastService.retrieveListOfWeatherForecast({
-          where: {
-            validFrom,
-            validTo,
-            castType: WeatherCastType.TWO_HOUR
-          }
-        })
-        
-        // Create new forecasts
-        if (weatherForecasts.length === 0) {
-          this.logger.log(`Generating new forecast from: ${start}, to: ${end}`)
-          return Promise.all(weatherList.forecasts.map(async (forecast)=> {
-            const newForecast = new WeatherForecastModel()
-            newForecast.castType = WeatherCastType.TWO_HOUR
-            const area = areas.find(area => area.name === forecast.area)
-            newForecast.populateFromGovSgData(weatherList, forecast, area)
-            return this.weatherForecastService.createWeatherForecastRecord(newForecast.sanitizeToDatabaseFormat() as WeatherForecast)
-          }))
-        }
-        
-        // If current timestamp is still in valid period
-        const currentTime = this.datetimeService.getCurrentTimestamp()
-        if (currentTime >= validFrom && currentTime <= validTo) {
-          this.logger.log(`Updating forecast from ${start}, to: ${end}`)
-          return Promise.all(weatherList.forecasts.map(async (forecast)=> {
-            const updateForecast = new WeatherForecastModel()
-            const area = areas.find(area => area.name === forecast.area)
-            const currentForecast = weatherForecasts.find(existingCast => existingCast.areaPky == area.pky)
-            updateForecast.populateFromGovSgData(weatherList, forecast, area)
-            return this.weatherForecastService.updateWeatherForecastRecord(currentForecast.pky, updateForecast.sanitizeToDatabaseFormat() as WeatherForecast)
-          }))
-        }
-
-        // If current timestamp has passed valid period
-        if (currentTime > validTo) {
-          this.logger.log(`Archiving forecasts from ${start}, to: ${end}`)
-          return Promise.all(weatherList.forecasts.map(async (forecast)=> {
-            const updateForecast = new WeatherForecastModel()
-            const area = areas.find(area => area.name === forecast.area)
-            const currentForecast = weatherForecasts.find(existingCast => existingCast.areaPky == area.pky)
-            updateForecast.populateFromGovSgData(weatherList, forecast, area)
-            updateForecast.isArchived = true
-            return this.weatherForecastService.updateWeatherForecastRecord(currentForecast.pky, updateForecast.sanitizeToDatabaseFormat() as WeatherForecast)
-          }))
-        }
-
-        this.logger.log(`No action taken for forecasts from: ${start}, to: ${end}`)
-      })
+      this.executeTask(undefined)
     })
 
     return this.cronJob
   }
-  executeTask() {
-    throw new Error("Method not implemented.");
+  async executeTask(datetime: number) {
+    const weatherResponse = await this.govSgWeatherService.retrieveTwoHourForecasts(datetime)
+    const areas = await this.areaService.retrieveListOfAreaWithWeathers({})
+    const weatherTimingList = weatherResponse.items
+    return Promise.all(weatherTimingList.map(async (weatherList) => {
+      const { start, end } = weatherList.validPeriod
+      const validFrom = DatetimeService.convertDateToTimestamp(start)
+      const validTo = DatetimeService.convertDateToTimestamp(end)
+      const weatherForecasts = await this.weatherForecastService.retrieveListOfWeatherForecast({
+        where: {
+          validFrom,
+          validTo,
+          castType: WeatherCastType.TWO_HOUR
+        }
+      })
+      
+      // Create new forecasts
+      if (weatherForecasts.length === 0) {
+        this.logger.log(`Generating new forecast from: ${start}, to: ${end}`)
+        return Promise.all(weatherList.forecasts.map(async (forecast)=> {
+          const newForecast = new WeatherForecastModel()
+          newForecast.castType = WeatherCastType.TWO_HOUR
+          const area = areas.find(area => area.name === forecast.area)
+          newForecast.populateFromGovSgData(weatherList, forecast, area)
+          return this.weatherForecastService.createWeatherForecastRecord(newForecast.sanitizeToDatabaseFormat() as WeatherForecast)
+        }))
+      }
+      
+      // If current timestamp is still in valid period
+      const currentTime = this.datetimeService.getCurrentTimestamp()
+      if (currentTime >= validFrom && currentTime <= validTo) {
+        this.logger.log(`Updating forecast from ${start}, to: ${end}`)
+        return Promise.all(weatherList.forecasts.map(async (forecast)=> {
+          const updateForecast = new WeatherForecastModel()
+          const area = areas.find(area => area.name === forecast.area)
+          const currentForecast = weatherForecasts.find(existingCast => existingCast.areaPky == area.pky)
+          updateForecast.populateFromGovSgData(weatherList, forecast, area)
+          return this.weatherForecastService.updateWeatherForecastRecord(currentForecast.pky, updateForecast.sanitizeToDatabaseFormat() as WeatherForecast)
+        }))
+      }
+
+      // If current timestamp has passed valid period
+      if (currentTime > validTo) {
+        this.logger.log(`Archiving forecasts from ${start}, to: ${end}`)
+        return Promise.all(weatherList.forecasts.map(async (forecast)=> {
+          const updateForecast = new WeatherForecastModel()
+          const area = areas.find(area => area.name === forecast.area)
+          const currentForecast = weatherForecasts.find(existingCast => existingCast.areaPky == area.pky)
+          updateForecast.populateFromGovSgData(weatherList, forecast, area)
+          updateForecast.isArchived = true
+          return this.weatherForecastService.updateWeatherForecastRecord(currentForecast.pky, updateForecast.sanitizeToDatabaseFormat() as WeatherForecast)
+        }))
+      }
+
+      this.logger.log(`No action taken for forecasts from: ${start}, to: ${end}`)
+    }))
   }
 
 }
