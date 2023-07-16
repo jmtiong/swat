@@ -10,6 +10,7 @@ SWAT stands for Singapore Weather And Traffic.
 2. Install `docker-compose`
 4. Run `docker-compose build`
 3. Run `docker-compose up`
+4. Go to `localhost` in your browser
 
 ## Manual Running
 Assuming that you have your postgres database running locally on port 5432
@@ -20,7 +21,7 @@ Assuming that you have your postgres database running locally on port 5432
 5. Create another terminal and travel to `frontend` folder
 6. Install npm modules via `npm install`
 7. Run `npm run start`
-8. Travel to `localhost:3001`
+8. Go to `localhost:3001` in your browser
 
 # Business Objective
 Create a web application that allows users to list, filter and view the weather and traffic conditions given a specific time and date with location.
@@ -33,6 +34,8 @@ Create a web application that allows users to list, filter and view the weather 
 5. Area name is unique and lat and long doesn't change.
 6. List of cameras will not change. There are no additional or removal of cameras.
 7. List of areas will not change. There are no additional or removal of areas.
+
+Backend [README.md](./backend/README.md) contains information regarding to how the GovSG APIs works.
 
 # Functional Requirements
 1. User is able to retrieve a list of locations given a date and time.
