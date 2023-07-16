@@ -10,7 +10,7 @@ import { isNumber } from "lodash";
 import { catchError, firstValueFrom } from "rxjs";
 
 @Injectable()
-export class GovSgTrafficService implements OnApplicationBootstrap {
+export class GovSgTrafficService {
   protected logger = new Logger(GovSgTrafficService.name)
 
   constructor (
@@ -19,43 +19,26 @@ export class GovSgTrafficService implements OnApplicationBootstrap {
     protected readonly datetimeService: DatetimeService
   ) {}
 
-  async onApplicationBootstrap() {
+  async setupScheduleSetting () {
     const setting = await this.prismaService.schedulerSetting.findFirst({
       where: {
         name: TaskType.GOV_SG_TRAFFIC_TASK
       }
     })
 
-    if (!setting) {
+    if (!setting || setting.name !== TaskType.GOV_SG_TRAFFIC_TASK) {
       const schedule = await this.prismaService.schedulerSetting.create({
         data: {
           enable: true,
           frequency: ScheduleFrequency.MINUTELY,
-          minute: 1,
+          minute: 3,
           name: TaskType.GOV_SG_TRAFFIC_TASK,
           timestamp: BigInt(Date.now())
         } as SchedulerSetting
       })
 
       this.logger.log(`Added a default setting for ${TaskType.GOV_SG_TRAFFIC_TASK}`)
-    }
-
-    const apiConfig = await this.prismaService.systemConfiguration.findUnique({
-      where: {
-        name: ApiName.GOV_SG_TRAFFIC_URL
-      }
-    })
-
-    if (!apiConfig) {
-      const config = await this.prismaService.systemConfiguration.create({
-        data: {
-          module: 'GOV_SG',
-          name: ApiName.GOV_SG_TRAFFIC_URL,
-          value: 'https://api.data.gov.sg/v1/transport/traffic-images',
-          version: '1'
-        } as SystemConfiguration
-      })
-      this.logger.log(`Added default system configuration for ${ApiName.GOV_SG_TRAFFIC_URL}`)
+      return schedule
     }
   }
 
