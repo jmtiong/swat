@@ -10,7 +10,7 @@ import { isNumber } from "lodash";
 import { catchError, firstValueFrom } from "rxjs";
 
 @Injectable()
-export class GovSgWeatherService implements OnApplicationBootstrap {
+export class GovSgWeatherService {
   protected logger = new Logger(GovSgWeatherService.name)
 
   constructor (
@@ -19,14 +19,14 @@ export class GovSgWeatherService implements OnApplicationBootstrap {
     protected readonly datetimeService: DatetimeService
   ) {}
 
-  async onApplicationBootstrap() {
+  async setupScheduleSetting () {
     const setting = await this.prismaService.schedulerSetting.findFirst({
       where: {
         name: TaskType.GOV_SG_WEATHER_TASK
       }
     })
 
-    if (!setting) {
+    if (!setting || setting.name !== TaskType.GOV_SG_WEATHER_TASK) {
       const schedule = await this.prismaService.schedulerSetting.create({
         data: {
           enable: true,
@@ -38,24 +38,7 @@ export class GovSgWeatherService implements OnApplicationBootstrap {
       })
 
       this.logger.log(`Added a default setting for ${TaskType.GOV_SG_WEATHER_TASK}`)
-    }
-
-    const apiConfig = await this.prismaService.systemConfiguration.findUnique({
-      where: {
-        name: ApiName.GOV_SG_TWO_HOUR_WEATHER_URL
-      }
-    })
-
-    if (!apiConfig) {
-      const config = await this.prismaService.systemConfiguration.create({
-        data: {
-          module: 'GOV_SG',
-          name: ApiName.GOV_SG_TWO_HOUR_WEATHER_URL,
-          value: 'https://api.data.gov.sg/v1/environment/2-hour-weather-forecast',
-          version: '1'
-        } as SystemConfiguration
-      })
-      this.logger.log(`Added default system configuration for ${ApiName.GOV_SG_TWO_HOUR_WEATHER_URL}`)
+      return schedule
     }
   }
 

@@ -2,9 +2,8 @@ import { Module } from "@nestjs/common";
 import { GovSgTrafficService } from "./gov-sg-traffic.service";
 import { GovSgWeatherService } from "./gov-sg-weather.service";
 import { HttpModule } from "@nestjs/axios";
-import { AreaInitializationService } from "./area-initialization.service";
-import { CameraInitializationService } from "./camera-initialization.service";
 import { CoreDomainModule } from "@/module/core-domain.module";
+import { AreaCameraInitializationService } from "./area-camera-initialization.service";
 
 @Module({
   imports: [
@@ -14,7 +13,7 @@ import { CoreDomainModule } from "@/module/core-domain.module";
     }),
     CoreDomainModule
   ],
-  providers: [GovSgTrafficService, GovSgWeatherService, AreaInitializationService, CameraInitializationService],
-  exports: [GovSgTrafficService, GovSgWeatherService, AreaInitializationService, CameraInitializationService]
+  providers: [GovSgTrafficService, GovSgWeatherService, AreaCameraInitializationService],
+  exports: [GovSgTrafficService, GovSgWeatherService, AreaCameraInitializationService]
 })
 export class GovSgModule {}

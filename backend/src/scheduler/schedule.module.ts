@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { SchedulerFactory } from "./schedule.factory";
-import { SchedulerService } from "./scheduler.service";
+import { SchedulerStartingService as SchedulerService } from "./scheduler.service";
 import { GOV_SG_TRAFFIC_TASK, GovSgTrafficTask } from "./gov-sg-traffic-task.service";
 import { GOV_SG_WEATHER_TASK, GovSgWeatherTask } from "./gov-sg-weather-task.service";
 import { CoreDomainModule } from "@/module/core-domain.module";

@@ -5,18 +5,25 @@ import { SchedulerRegistry } from "@nestjs/schedule";
 import { SchedulerSetting } from "@prisma/client";
 import { CronJob, CronTime } from "cron";
 import { SchedulerFactory } from "./schedule.factory";
+import { AreaCameraInitializationService } from "@/integration/area-camera-initialization.service";
+import { GovSgTrafficService } from "@/integration/gov-sg-traffic.service";
+import { GovSgWeatherService } from "@/integration/gov-sg-weather.service";
 
 @Injectable()
-export class SchedulerService implements OnApplicationBootstrap {
-  protected logger = new Logger(SchedulerService.name)
+export class SchedulerStartingService implements OnApplicationBootstrap {
+  protected logger = new Logger(SchedulerStartingService.name)
 
   constructor (
     protected readonly prismaService: PrismaService,
+    protected readonly govSgWeatherService: GovSgWeatherService,
+    protected readonly govSgTrafficService: GovSgTrafficService,
     protected readonly scheduleRegistry: SchedulerRegistry,
     protected readonly scheduleFactory: SchedulerFactory
   ) {}
 
   async onApplicationBootstrap() {
+    await this.govSgWeatherService.setupScheduleSetting()
+    await this.govSgTrafficService.setupScheduleSetting()
     this.setupSchedules()
   }
 
