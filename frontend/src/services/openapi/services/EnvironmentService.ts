@@ -23,7 +23,7 @@ export class EnvironmentService {
     ): CancelablePromise<Array<AreaWithWeatherDto>> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/v1/environment/2-hour-area-weather-forecast',
+            url: '/api/v1/environment/2-hour-area-weather-forecast',
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -39,7 +39,7 @@ export class EnvironmentService {
     ): CancelablePromise<Array<WeatherForecastDto>> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/v1/environment/2-hour-forecast',
+            url: '/api/v1/environment/2-hour-forecast',
             body: requestBody,
             mediaType: 'application/json',
         });

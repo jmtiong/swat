@@ -21,7 +21,7 @@ async function bootstrap() {
     defaultVersion: VERSION_NEUTRAL
   });
   app.use(express.json({ limit: '50mb' }))
-
+  app.setGlobalPrefix('/api')
   app.useGlobalPipes(new ValidationPipe({
     transform: true
   }))
@@ -43,7 +43,7 @@ async function bootstrap() {
 
   document.components.schemas = Object.assign({}, document.components.schemas || {}, schemas)
 
-  SwaggerModule.setup('api', app, document)
+  SwaggerModule.setup('/api/swagger', app, document)
   await app.listen(3000);
 }
 bootstrap();

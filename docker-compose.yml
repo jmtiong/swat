@@ -12,3 +12,22 @@ services:
       - "5432:5432"
     volumes:
        - ./database/data:/var/lib/postgresql/data
+  backend:
+    build: ./backend
+    container_name: backend
+    environment:
+      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydb?schema=public
+    ports:
+      - 3000:3000
+    links:
+      - db
+    entrypoint: /usr/src/app/entrypoint.sh
+    dns:
+      - 8.8.8.8
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - 80:80
+    links:
+      - backend

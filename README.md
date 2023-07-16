@@ -5,6 +5,10 @@ SWAT - Singapore Weather And Traffic
 ## What is SWAT?
 SWAT stands for Singapore Weather And Traffic.
 
+# How to run?
+1. Satisfy the prerequisites for Docker Compose https://docs.docker.com/compose/gettingstarted/
+2. Install `docker-compose`
+3. Run `docker-compose up`
 
 # Business Objective
 Create a web application that allows users to list, filter and view the weather and traffic conditions given a specific time and date with location.
@@ -23,6 +27,11 @@ Create a web application that allows users to list, filter and view the weather 
 2. User is able to retrieve traffic imagery and weather conditions given a location.
 
 # Non-Functional Requirements
+These are some of the factors to consider during building of the project.
+
+Both frontend and backend utilizes
+Node Version: 18.16.1
+NPM Version: 9.5.1
 
 ## Performance
 ## Scalability

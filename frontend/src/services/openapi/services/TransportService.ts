@@ -23,7 +23,7 @@ export class TransportService {
     ): CancelablePromise<TrafficCaptureDto> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/v1/transport/image',
+            url: '/api/v1/transport/image',
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -39,7 +39,7 @@ export class TransportService {
     ): CancelablePromise<Array<TrafficCaptureDto>> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/v1/transport/images',
+            url: '/api/v1/transport/images',
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -55,7 +55,7 @@ export class TransportService {
     ): CancelablePromise<Array<CameraDto>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/v1/transport/cameras',
+            url: '/api/v1/transport/cameras',
             query: {
                 'area': area,
             },
